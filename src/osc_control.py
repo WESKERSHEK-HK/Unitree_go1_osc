@@ -79,7 +79,7 @@ def main():
     disp.map("/turn_left", handle_osc_message, (pub, 'turn_left'))
     disp.map("/turn_right", handle_osc_message, (pub, 'turn_right'))
 
-    server = osc_server.ThreadingOSCUDPServer(('127.0.0.1', 8000), disp)
+    server = osc_server.ThreadingOSCUDPServer(('192.168.3.133', 10000), disp)
 
     keyboard_thread = threading.Thread(target=process_keyboard_input, args=(pub,))
     keyboard_thread.start()
