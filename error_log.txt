@@ -1,0 +1,10 @@
+import-im6.q16: not authorized `rospy' @ error/constitute.c/WriteImage/1037.
+from: can't read /var/mail/geometry_msgs.msg
+import-im6.q16: not authorized `sys' @ error/constitute.c/WriteImage/1037.
+import-im6.q16: not authorized `tty' @ error/constitute.c/WriteImage/1037.
+import-im6.q16: not authorized `termios' @ error/constitute.c/WriteImage/1037.
+from: can't read /var/mail/pythonosc
+import-im6.q16: not authorized `threading' @ error/constitute.c/WriteImage/1037.
+/home/ubuntu/catkin_ws/src/unitree_go1_osc/src/osc_control.py: line 9: syntax error near unexpected token `('
+/home/ubuntu/catkin_ws/src/unitree_go1_osc/src/osc_control.py: line 9: `def getch():'
+
