@@ -49,7 +49,8 @@ def process_keyboard_input(pub):
         pub.publish(twist)
 
 def handle_osc_message(unused_addr, args, value):
-    pub, command = args
+    global pub
+    command = args
     twist = Twist()
 
     if command == 'forward':
@@ -64,10 +65,11 @@ def handle_osc_message(unused_addr, args, value):
         twist.angular.z = 1.0
     elif command == 'turn_right':
         twist.angular.z = -1.0
-
+    print('Received osc command: %s' %str(command))
     pub.publish(twist)
 
 def main():
+    global pub
     rospy.init_node('keyboard_input_node', anonymous=True)
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
 
@@ -79,13 +81,15 @@ def main():
     disp.map("/turn_left", handle_osc_message, (pub, 'turn_left'))
     disp.map("/turn_right", handle_osc_message, (pub, 'turn_right'))
 
-    server = osc_server.ThreadingOSCUDPServer(('192.168.6.233', 10000), disp)
+    server = osc_server.ThreadingOSCUDPServer(('192.168.50.100', 10000), disp)
 
     keyboard_thread = threading.Thread(target=process_keyboard_input, args=(pub,))
     keyboard_thread.start()
 
     rospy.loginfo("Serving on %s:%s", server.server_address[0], server.server_address[1])
     server.serve_forever()
+
+global pub
 
 if __name__ == '__main__':
     try:
