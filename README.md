@@ -33,9 +33,9 @@
   sudo apt-get install python3-pip python3-yaml
   sudo pip3 install rospkg catkin_pkg python-osc
   ```
-* Unitree Legged SDK 3.8.0 [link](https://github.com/unitreerobotics/unitree_legged_sdk)
+* Unitree Legged SDK 3.8.0 (https://github.com/unitreerobotics/unitree_legged_sdk)
 
-* Unitree Legged Real 3.5.1 [link] (https://github.com/unitreerobotics/unitree_ros_to_real)
+* Unitree Legged Real 3.5.1 (https://github.com/unitreerobotics/unitree_ros_to_real)
 
 ### Installation
 
