@@ -28,9 +28,6 @@
 
 This project aims to use python-osc with ROS melodic to controls robot dog: Unitree Go1.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 ### Prerequisites
 
 * Python3 Library
