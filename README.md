@@ -15,10 +15,9 @@
 
 <div align="center">
 
-<h3 align="center">Unitree Go1 OSC</h3>
+<h1 align="center">Unitree Go1 OSC</h3>
 <br />
-<br />
-<br />
+
 </div>
 
 
