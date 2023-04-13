@@ -45,12 +45,12 @@ This project aims to use python-osc with ROS melodic to controls robot dog: Unit
    ```
 2. Change IP address in osc_control.py line 84:
    ```sh
-   server = osc_server.ThreadingOSCUDPServer(('<IP>', <PORT>), disp)
+   server = osc_server.ThreadingOSCUDPServer(('IP', PORT), disp)
    ```
 3. Catkin_make
    ```js
    cd
-   cd <your work space here>
+   cd "your work space here"
    catkin_make
    ```
 4. Run
