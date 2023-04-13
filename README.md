@@ -17,7 +17,6 @@
 
 <h1 align="center">Unitree Go1 OSC</h3>
 <br />
-
 </div>
 
 
@@ -27,7 +26,7 @@
 
 This project aims to use python-osc with ROS melodic to controls robot dog: Unitree Go1.
 
-### Prerequisites
+### Requirments
 
 * Python3 Library
   ```sh
@@ -40,18 +39,18 @@ This project aims to use python-osc with ROS melodic to controls robot dog: Unit
 
 ### Installation
 
-1. Clone the repo:
+1. Clone the repo to your workspace:
    ```sh
    git clone https://github.com/WESKERSHEK-HK/unitree_go1_osc.git
    ```
 2. Change IP address in osc_control.py line 84:
    ```sh
-   server = osc_server.ThreadingOSCUDPServer(('<IP>', <YOUR_PORT>), disp)
+   server = osc_server.ThreadingOSCUDPServer(('<IP>', <PORT>), disp)
    ```
 3. Catkin_make
    ```js
    cd
-   cd <Workspace>
+   cd <your work space here>
    catkin_make
    ```
 4. Run
