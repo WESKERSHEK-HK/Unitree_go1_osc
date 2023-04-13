@@ -65,6 +65,10 @@ def handle_osc_message(unused_addr, args, value):
         twist.angular.z = 1.0
     elif command == 'turn_right':
         twist.angular.z = -1.0
+    elif command == 'stand':
+        twist.angular.y = 0.0
+    elif command == 'sit':
+        twist.angular.y = -0.2
     print('Received osc command: %s' %str(command))
     pub.publish(twist)
 
@@ -80,6 +84,8 @@ def main():
     disp.map("/right", handle_osc_message, (pub, 'right'))
     disp.map("/turn_left", handle_osc_message, (pub, 'turn_left'))
     disp.map("/turn_right", handle_osc_message, (pub, 'turn_right'))
+    disp.map("/stand", handle_osc_message, (pub, 'stand'))
+    disp.map("/sit", handle_osc_message, (pub, 'sit'))
 
     server = osc_server.ThreadingOSCUDPServer(('192.168.50.100', 10000), disp)
 

@@ -24,7 +24,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This project aims to use python-osc with ROS melodic to controls robot dog: Unitree Go1.
+  This project aims to use python-osc with ROS melodic to controls robot dog: Unitree Go1.
 
 ### Requirments
 
@@ -59,4 +59,30 @@ This project aims to use python-osc with ROS melodic to controls robot dog: Unit
    rosrun unitree_go1_osc osc_control
    ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### Additional Configuration
+* Edit unitree_legged_real/include/covert.h line 308-329:
+  ```js
+  cmd.head[0] = 0xFE;
+  cmd.head[1] = 0xEF;
+  cmd.levelFlag = UNITREE_LEGGED_SDK::HIGHLEVEL;
+  cmd.mode = 0;
+  cmd.gaitType = 0;
+  cmd.speedLevel = 0;
+  cmd.footRaiseHeight = 0;
+  cmd.bodyHeight = 0;
+  cmd.euler[0] = 0;
+  cmd.euler[1] = 0;
+  cmd.euler[2] = 0;
+  cmd.velocity[0] = 0.0f;
+  cmd.velocity[1] = 0.0f;
+  cmd.yawSpeed = 0.0f;
+  cmd.reserve = 0;
+
+  cmd.velocity[0] = msg->linear.x;
+  cmd.velocity[1] = msg->linear.y;
+  cmd.yawSpeed = msg->angular.z;
+  cmd.bodyHeight = msg->angular.y;
+
+  cmd.mode = 2;
+  cmd.gaitType = 1;
+  ```
