@@ -123,7 +123,7 @@ def main():
 
     while not rospy.is_shutdown():
         data = str(ser.readline())
-        split_data = data.split("  , ")
+        split_data = data.split(", ")
         yaw = None
 
         try:
@@ -132,7 +132,7 @@ def main():
                 #print(key)
                 if "yaw" in key:
                     print(value)
-                    yaw = math.floor(float(yaw[0:removeIndex]))
+                    yaw = math.floor(float(yaw[0:2]))
                     if yaw < 0:
                         yaw += 360
 
