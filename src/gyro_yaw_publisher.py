@@ -129,15 +129,15 @@ def main():
         try:
             for item in split_data:
                 key, value = item.split(": ")
-                print(value)
+                #print(value)
                 if "yaw" in key:
-                    #print(value)
+                    print(item)
                     yaw = float(value[0:2])
                     if yaw < 0:
                         yaw += 360
 
                     current_yaw = yaw
-                    print(yaw)
+                    #print(yaw)
                     pub.publish(yaw)  # Publish the yaw value
 
         except Exception as e:
