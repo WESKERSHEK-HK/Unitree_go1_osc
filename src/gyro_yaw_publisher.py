@@ -7,7 +7,7 @@ from std_msgs.msg import Float64, Empty
 from geometry_msgs.msg import Point, Twist
 
 ser = serial.Serial(
-    port='COM7',
+    port='ttyUSB0',
     baudrate=115200,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
