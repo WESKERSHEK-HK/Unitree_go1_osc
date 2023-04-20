@@ -123,7 +123,7 @@ def main():
 
     while not rospy.is_shutdown():
         data = str(ser.readline())
-        split_data = data.split(", ")
+        split_data = data.split("  , ")
         yaw = None
 
         try:
