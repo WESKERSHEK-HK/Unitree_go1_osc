@@ -125,11 +125,11 @@ def main():
         data = str(ser.readline())
         split_data = data.split(", ")
         yaw = None
-
+        print(data)
         try:
             for item in split_data:
                 key, value = item.split(": ")
-                #print(key)
+                print(value)
                 if "yaw" in key:
                     #print(value)
                     yaw = float(value[0:2])
