@@ -7,7 +7,7 @@ from std_msgs.msg import Float64, Empty
 from geometry_msgs.msg import Point, Twist
 
 ser = serial.Serial(
-    port='ttyUSB0',
+    port='/dev/ttyUSB0',
     baudrate=115200,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
@@ -123,21 +123,22 @@ def main():
 
     while not rospy.is_shutdown():
         data = str(ser.readline())
-        splitdata = data.split(' ')
+        split_data = data.split(", ")
+        yaw = None
 
-        if "version: 34688\\r\\n" in data:
-            try:
-                yaw = splitdata[5]
-                removeIndex = yaw.index('\\xa1')
-                yaw = math.floor(float(yaw[0:removeIndex]))
-                if yaw < 0:
-                    yaw += 360
+        try:
+            for item in split_data:
+                key, value = item.split(": ")
+                if key == "yaw":
+                    yaw = math.floor(float(yaw[0:removeIndex]))
+                    if yaw < 0:
+                        yaw += 360
 
-                current_yaw = yaw
-                pub.publish(yaw)  # Publish the yaw value
+                    current_yaw = yaw
+                    pub.publish(yaw)  # Publish the yaw value
 
-            except Exception as e:
-                rospy.logerr("Error processing serial data: %s", str(e))
+        except Exception as e:
+            pass
 
         rate.sleep()
 
