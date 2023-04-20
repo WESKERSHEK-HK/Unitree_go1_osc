@@ -131,8 +131,8 @@ def main():
                 key, value = item.split(": ")
                 #print(key)
                 if "yaw" in key:
-                    print(value)
-                    yaw = math.floor(float(yaw[0:2]))
+                    #print(value)
+                    yaw = math.floor(float(value[0:2]))
                     if yaw < 0:
                         yaw += 360
 
