@@ -10,6 +10,7 @@ project(unitree_go1_osc)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   rospy
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -160,6 +161,7 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
  catkin_install_python(PROGRAMS
    src/osc_control.py
+   src/gyro_yaw_publisher.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

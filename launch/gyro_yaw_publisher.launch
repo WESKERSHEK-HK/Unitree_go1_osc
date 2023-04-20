@@ -1,0 +1,4 @@
+<launch>
+  <!-- Start the gyro_yaw_publisher node -->
+  <node name="gyro_yaw_publisher" pkg="unitree_go1_osc" type="gyro_yaw_publisher.py" output="screen" />
+</launch>
