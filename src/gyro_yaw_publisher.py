@@ -129,8 +129,9 @@ def main():
         try:
             for item in split_data:
                 key, value = item.split(": ")
-                print(key)
+                #print(key)
                 if "yaw" in key:
+                    print(value)
                     yaw = math.floor(float(yaw[0:removeIndex]))
                     if yaw < 0:
                         yaw += 360
