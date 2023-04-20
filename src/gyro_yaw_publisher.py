@@ -135,6 +135,7 @@ def main():
                         yaw += 360
 
                     current_yaw = yaw
+                    print(yaw)
                     pub.publish(yaw)  # Publish the yaw value
 
         except Exception as e:
