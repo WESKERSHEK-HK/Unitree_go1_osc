@@ -132,7 +132,7 @@ def main():
                 #print(key)
                 if "yaw" in key:
                     #print(value)
-                    yaw = math.floor(float(value[0:1]))
+                    yaw = float(value[0:2])
                     if yaw < 0:
                         yaw += 360
 
