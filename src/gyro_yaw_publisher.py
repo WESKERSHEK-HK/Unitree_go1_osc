@@ -125,7 +125,7 @@ def main():
         data = str(ser.readline())
         split_data = data.split(", ")
         yaw = None
-        print(data)
+        #print(data)
         try:
             for item in split_data:
                 key, value = item.split(": ")
