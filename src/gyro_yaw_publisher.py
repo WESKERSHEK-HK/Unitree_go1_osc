@@ -16,12 +16,23 @@ ser = serial.Serial(
 
 current_position = Point()
 current_yaw = 0
+origin = Point()
+robot_start = False
 
+def origin_setup(data):
+    global origin, robot_start
+    origin.x = data.x
+    origin.y = data.y
+    rospy.loginfo("Received origin: x = %f, y = %f", data.x, data.y)
+    robot_start = True
+    
 def position_callback(data):
-    global current_position
+    global current_position, robot_start
     current_position.x = data.x
     current_position.y = data.y
-    rospy.loginfo("Received position: x = %f, y = %f", data.x, data.y)
+    #rospy.loginfo("Received position: x = %f, y = %f", data.x, data.y)
+    if robot_start == False:
+        origin_setup(current_position)
 
 def home_callback(data):
     global current_yaw
@@ -39,8 +50,8 @@ def home_callback(data):
     pub_home_done.publish(Empty())
 
 def calculate_angle_to_origin(position):
-    dx = position.x
-    dy = position.y
+    dx = position.x - origin.x
+    dy = position.y - origin.y
     angle_rad = math.atan2(dy, dx)
     angle_deg = math.degrees(angle_rad)
     return angle_deg
@@ -86,7 +97,9 @@ def move_forward_to_origin(pub_cmd_vel, tolerance=0.1, linear_speed=0.1):
     twist.linear.x = linear_speed
 
     while not rospy.is_shutdown():
-        distance_to_origin = math.sqrt(current_position.x**2 + current_position.y**2)
+        dx = current_position.x - origin.x
+        dy = current_position.y - origin.y
+        distance_to_origin = math.sqrt(dx**2 + dy**2)
 
         if distance_to_origin <= tolerance:
             break
