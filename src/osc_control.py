@@ -48,6 +48,10 @@ def process_keyboard_input(pub):
                 twist.angular.z = 1.0
             elif ch == 'l':
                 twist.angular.z = -1.0
+            elif ch == 'i':
+                twist.angular.y = 0.0
+            elif ch == 'm':
+                twist.angular.y = -0.2
 
             pub.publish(twist)
 
@@ -70,17 +74,17 @@ def handle_osc_message(unused_addr, args, value):
         twist = Twist()
 
         if command == 'forward':
-            twist.linear.x = 0.5
+            twist.linear.x = 0.1
         elif command == 'backward':
-            twist.linear.x = -0.5
+            twist.linear.x = -0.1
         elif command == 'left':
-            twist.linear.y = 0.5
+            twist.linear.y = 0.1
         elif command == 'right':
-            twist.linear.y = -0.5
+            twist.linear.y = -0.1
         elif command == 'turn_left':
-            twist.angular.z = 1.0
+            twist.angular.z = 0.1
         elif command == 'turn_right':
-            twist.angular.z = -1.0
+            twist.angular.z = -0.1
         elif command == 'stand':
             twist.angular.y = 0.0
         elif command == 'sit':
