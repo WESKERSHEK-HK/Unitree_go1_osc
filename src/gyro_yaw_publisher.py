@@ -18,6 +18,7 @@ current_position = Point()
 current_yaw = 0
 origin = Point()
 robot_start = False
+robot_home = False
 
 def origin_setup(data):
     global origin, robot_start
@@ -35,19 +36,23 @@ def position_callback(data):
         origin_setup(current_position)
 
 def home_callback(data):
-    global current_yaw
-    angle_to_origin = calculate_angle_to_origin(current_position)
-    rospy.loginfo("Angle to origin: %f degrees", angle_to_origin)
+    global current_yaw, robot_home
+    if robot_home == False:
+        robot_home = True
+        angle_to_origin = calculate_angle_to_origin(current_position)
+        rospy.loginfo("Angle to origin: %f degrees", angle_to_origin)
 
-    shortest_angle = calculate_shortest_angle(current_yaw, angle_to_origin)
-    turn_direction = decide_turn_direction(shortest_angle)
-    execute_turn(pub_cmd_vel, shortest_angle, turn_direction)
+        shortest_angle = calculate_shortest_angle(current_yaw, angle_to_origin)
+        turn_direction = decide_turn_direction(shortest_angle)
+        execute_turn(pub_cmd_vel, shortest_angle, turn_direction)
 
-    move_forward_to_origin(pub_cmd_vel)
+        move_forward_to_origin(pub_cmd_vel)
 
-    turn_to_zero_degrees(pub_cmd_vel)
+        turn_to_zero_degrees(pub_cmd_vel)
 
-    pub_home_done.publish(Empty())
+        pub_home_done.publish(Empty())
+
+        robot_home = False
 
 def calculate_angle_to_origin(position):
     dx = position.x - origin.x
