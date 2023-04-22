@@ -55,6 +55,12 @@ def process_keyboard_input(pub):
 
             pub.publish(twist)
 
+def stop_timer_callback(event):
+    global stop_pub
+    empty_msg = Empty()
+    print('Timer expired: Sending stop command')
+    stop_pub.publish(empty_msg)
+
 def homedone_callback(msg):
     global paused
     print('Received homedone message')
@@ -93,12 +99,16 @@ def handle_osc_message(unused_addr, args, value):
         pub.publish(twist)
 
 def main():
-    global pub, home_pub, paused
+    global pub, home_pub, paused, stop_pub
     paused = False
     home_pub = rospy.Publisher('dog/home', Empty, queue_size=1)
+    stop_pub = rospy.Publisher('dog/stop', Empty, queue_size=1)
     rospy.init_node('keyboard_input_node', anonymous=True)
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
     rospy.Subscriber('dog/homedone', Empty, homedone_callback)
+
+    # Add a timer that expires after 30 minutes (1800 seconds)
+    timer = rospy.Timer(rospy.Duration(1800), stop_timer_callback, oneshot=True)
 
     disp = dispatcher.Dispatcher()
     disp.map("/forward", handle_osc_message, (pub, 'forward'))

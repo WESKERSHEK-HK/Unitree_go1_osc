@@ -35,6 +35,23 @@ def position_callback(data):
     if robot_start == False:
         origin_setup(current_position)
 
+def stop_callback(data):
+    global current_yaw, robot_home
+    if robot_home == False:
+        robot_home = True
+        angle_to_origin = calculate_angle_to_origin(current_position)
+        rospy.loginfo("Angle to origin: %f degrees", angle_to_origin)
+
+        shortest_angle = calculate_shortest_angle(current_yaw, angle_to_origin)
+        turn_direction = decide_turn_direction(shortest_angle)
+        execute_turn(pub_cmd_vel, shortest_angle, turn_direction)
+
+        move_forward_to_origin(pub_cmd_vel)
+
+        turn_to_zero_degrees(pub_cmd_vel)
+
+        
+
 def home_callback(data):
     global current_yaw, robot_home
     if robot_home == False:
@@ -116,6 +133,16 @@ def move_forward_to_origin(pub_cmd_vel, tolerance=0.1, linear_speed=0.1):
     pub_cmd_vel.publish(twist)
     rospy.loginfo("Reached origin.")
 
+def sit_down_to_stop(pub_cmd_vel, tolerance=0.1, linear_speed=0.1):
+    rospy.loginfo("Sitting down to stop the robot...")
+
+    twist = Twist()
+    twist.angular.y = -0.2
+    pub_cmd_vel.publish(twist)
+    rospy.sleep(2)
+    
+    rospy.loginfo("Waiting to shutdown.")
+
 def turn_to_zero_degrees(pub_cmd_vel, tolerance=5, angular_speed=0.1):
     rospy.loginfo("Turning to face 0 degrees...")
 
@@ -132,6 +159,7 @@ def main():
     rospy.init_node("gyro_yaw_publisher", anonymous=True)
     rospy.Subscriber("/dog/position", Point, position_callback)
     rospy.Subscriber("/dog/home", Empty, home_callback)
+    rospy.Subscriber("/dog/stop", Empty, stop_callback)
 
     pub = rospy.Publisher("yaw_data", Float64, queue_size=1)
     pub_cmd_vel = rospy.Publisher("cmd_vel", Twist, queue_size=1)
