@@ -6,7 +6,7 @@ from std_msgs.msg import Empty
 import sys
 import tty
 import termios
-from pythonosc import dispatcher, osc_server
+from pythonosc import dispatcher, osc_server, udp_client
 import threading
 
 def getch():
@@ -60,6 +60,9 @@ def stop_timer_callback(event):
     empty_msg = Empty()
     print('Timer expired: Sending stop command')
     stop_pub.publish(empty_msg)
+    # Send OSC command
+    osc_client = udp_client.SimpleUDPClient("192.168.50.50", 20000)
+    osc_client.send_message("/switch", [])
 
 def homedone_callback(msg):
     global paused
