@@ -38,7 +38,7 @@ def position_callback(data):
     if robot_start == False:
         origin_setup(current_position)
 
-def stop_callback(data):
+def stop_callback():
     global current_yaw, robot_home, performance_enabled
     if robot_home == False:
         robot_home = True
@@ -198,7 +198,6 @@ def main():
     rospy.init_node("gyro_yaw_publisher", anonymous=True)
     rospy.Subscriber("/dog/position", Point, position_callback)
     rospy.Subscriber("/dog/home", Empty, home_callback)
-    rospy.Subscriber("/dog/stop", Empty, stop_callback)
 
     pub = rospy.Publisher("yaw_data", Float64, queue_size=1)
     pub_cmd_vel = rospy.Publisher("cmd_vel", Twist, queue_size=1)
