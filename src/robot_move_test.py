@@ -127,7 +127,7 @@ def main():
     rospy.Subscriber("yaw_data", Float64, yaw_callback, queue_size=1, buff_size=2**24)
     rospy.Subscriber("/dog/position", Point, position_callback, queue_size=1, buff_size=2**24)
     pub_cmd_vel = rospy.Publisher("cmd_vel", Twist, queue_size=1)
-
+    print('start subscriber')
     yaw = 0
     position = Point()
     running = True
@@ -135,7 +135,7 @@ def main():
 
     # Schedule the stop_function to run after 30 minutes
     #rospy.Timer(rospy.Duration(1800), stop_function, oneshot=True)
-   
+    print('start performance')
     performance_function()
     
 
