@@ -21,6 +21,7 @@ current_yaw = 0
 origin = Point()
 robot_start = False
 robot_home = False
+start_delay=30
 
 def origin_setup(data):
     global origin, robot_start
@@ -160,11 +161,8 @@ def turn_to_zero_degrees(pub_cmd_vel, tolerance=5, angular_speed=0.1):
 
     rospy.loginfo("Facing 0 degrees.")
 
-def performance(pub_cmd_vel, start_delay=30, angle_step=5, rest_min=10, rest_max=60):
+def performance(pub_cmd_vel, angle_step=5, rest_min=10, rest_max=60):
     global robot_start
-
-    rospy.loginfo("Starting performance in %d seconds...", start_delay)
-    time.sleep(start_delay)
 
     rospy.loginfo("Performance started")
 
@@ -206,6 +204,9 @@ def main():
     pub_home_done = rospy.Publisher("/dog/homedone", Empty, queue_size=1)
 
     rate = rospy.Rate(10)  # 10 Hz
+    
+    rospy.loginfo("Starting performance in %d seconds...", start_delay)
+    time.sleep(start_delay)
 
     while not rospy.is_shutdown():
         data = str(ser.readline())
