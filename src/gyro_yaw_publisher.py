@@ -185,6 +185,7 @@ def main():
                 if "yaw" in key:
                     print(item)
                     yaw = float(value[0:2])
+                    print(yaw)
                     if yaw < 0:
                         yaw += 360
 
