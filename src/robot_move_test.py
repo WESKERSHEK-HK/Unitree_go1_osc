@@ -15,9 +15,9 @@ def position_callback(data):
     position = data
 
 def check_position():
-    global position, running
+    global position
 
-    while running:
+    while True:
         current_position = position
         rospy.sleep(0.1)
         if current_position == position:
