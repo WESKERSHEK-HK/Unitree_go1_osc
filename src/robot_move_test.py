@@ -127,15 +127,14 @@ def main():
     rospy.Subscriber("/dog/position", Point, position_callback)
     pub_cmd_vel = rospy.Publisher("cmd_vel", Twist, queue_size=1)
 
-    print('start' )
     yaw = 0
     position = Point()
     running = True
     original_position = check_position()
 
     # Schedule the stop_function to run after 30 minutes
-    rospy.Timer(rospy.Duration(1800), stop_function, oneshot=True)
-    print('start')
+    #rospy.Timer(rospy.Duration(1800), stop_function, oneshot=True)
+   
     performance_function()
 
 if __name__ == "__main__":
