@@ -166,10 +166,10 @@ def turn_to_zero_degrees(pub_cmd_vel, tolerance=5, angular_speed=0.1):
 
 def performance(pub_cmd_vel, angle_step=5, rest_min=10, rest_max=60):
     global robot_start
-
+    print('start')
     if robot_start == True:
         angles = [270, 60]
-
+        print ('angle')
         for angle in [angle for _ in range(2) for angle in angles]:
             if not robot_start:
                 break
