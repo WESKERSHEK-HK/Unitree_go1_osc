@@ -86,6 +86,7 @@ def calculate_angle_to_origin(position):
 
 def calculate_shortest_angle(current_angle, target_angle):
     diff = target_angle - current_angle
+    rospy.loginfo("Shortest Angle %d ", (((diff + 180) % 360) - 180))
     return ((diff + 180) % 360) - 180
 
 def decide_turn_direction(shortest_angle):
@@ -103,7 +104,7 @@ def execute_turn(pub_cmd_vel, shortest_angle, turn_direction, tolerance=5, angul
     twist = Twist()
     twist.angular.z = turn_direction * angular_speed
 
-    rospy.loginfo("Turning to face origin...")
+    rospy.loginfo("Turning to Target Angle %d ", twist.angular.z)
 
     while not rospy.is_shutdown():
         angle_error = calculate_shortest_angle(current_yaw, target_yaw)
