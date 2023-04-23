@@ -90,7 +90,7 @@ def decide_turn_direction(shortest_angle):
     else:
         return -1  # Turn right
 
-def execute_turn(pub_cmd_vel, shortest_angle, turn_direction, tolerance=5, angular_speed=0.1):
+def execute_turn(pub_cmd_vel, shortest_angle, turn_direction, tolerance=5, angular_speed=0.2):
     global current_yaw
 
     target_yaw = current_yaw + shortest_angle
@@ -114,7 +114,7 @@ def execute_turn(pub_cmd_vel, shortest_angle, turn_direction, tolerance=5, angul
     pub_cmd_vel.publish(twist)
     rospy.loginfo("Turn completed.")
 
-def move_forward_to_origin(pub_cmd_vel, tolerance=0.1, linear_speed=0.5):
+def move_forward_to_origin(pub_cmd_vel, tolerance=0.1, linear_speed=0.2):
     rospy.loginfo("Moving forward to origin...")
 
     twist = Twist()
@@ -135,7 +135,7 @@ def move_forward_to_origin(pub_cmd_vel, tolerance=0.1, linear_speed=0.5):
     pub_cmd_vel.publish(twist)
     rospy.loginfo("Reached origin.")
 
-def sit_down_to_stop(pub_cmd_vel, tolerance=0.1, linear_speed=0.1):
+def sit_down_to_stop(pub_cmd_vel, tolerance=0.1, linear_speed=0.2):
     rospy.loginfo("Stop the robot...")
 
     twist = Twist()
@@ -228,7 +228,7 @@ def main():
 
         except Exception as e:
             pass
-        
+
         performance(pub_cmd_vel)
 
 
