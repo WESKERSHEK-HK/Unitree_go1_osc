@@ -42,6 +42,7 @@ def stop_callback(data):
     global current_yaw, robot_home, performance_enabled
     if robot_home == False:
         robot_home = True
+        rospy.loginfo("Performance stopped")
         angle_to_origin = calculate_angle_to_origin(current_position)
         rospy.loginfo("Angle to origin: %f degrees", angle_to_origin)
 
@@ -59,6 +60,7 @@ def home_callback(data):
     global current_yaw, robot_home
     if robot_home == False:
         robot_home = True
+        rospy.loginfo("Performance stopped")
         angle_to_origin = calculate_angle_to_origin(current_position)
         rospy.loginfo("Angle to origin: %f degrees", angle_to_origin)
 
@@ -71,8 +73,9 @@ def home_callback(data):
         turn_to_zero_degrees(pub_cmd_vel)
 
         pub_home_done.publish(Empty())
-
+        rospy.loginfo("Performance started")
         robot_home = False
+        
 
 def calculate_angle_to_origin(position):
     dx = position.x - origin.x
@@ -164,8 +167,6 @@ def turn_to_zero_degrees(pub_cmd_vel, tolerance=5, angular_speed=0.1):
 def performance(pub_cmd_vel, angle_step=5, rest_min=10, rest_max=60):
     global robot_start
 
-    rospy.loginfo("Performance started")
-
     while robot_start:
         angles = [270, 60]
 
@@ -179,7 +180,7 @@ def performance(pub_cmd_vel, angle_step=5, rest_min=10, rest_max=60):
                 angle_range = range(start_angle, end_angle - 360, -angle_step)
 
             for angle in angle_range:
-                if not performance_enabled:
+                if not robot_start:
                     break
 
                 rospy.loginfo("Rotating to %d degrees", angle)
@@ -207,6 +208,10 @@ def main():
     
     rospy.loginfo("Starting performance in %d seconds...", start_delay)
     time.sleep(start_delay)
+
+    rospy.loginfo("Performance started")
+    
+    timer = rospy.Timer(rospy.Duration(1800), stop_callback, oneshot=True)
 
     while not rospy.is_shutdown():
         data = str(ser.readline())
