@@ -183,7 +183,7 @@ def main():
                 key, value = item.split(": ")
                 #print(value)
                 if "yaw" in key:
-                    len(item)
+                    len(value)
                     yaw = float(value[0:1])
                     #print(yaw)
                     if yaw < 0:
