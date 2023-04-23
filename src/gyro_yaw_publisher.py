@@ -80,7 +80,7 @@ def performance():
     if robot_home == False:
         twist = Twist()
         if robot_turn == 0:
-            if current_yaw >= 265 or current_yaw <= 275:
+            if current_yaw >= 265 and current_yaw <= 275:
                 twist.angular.z = 0.0
                 pub_cmd_vel.publish(twist)
                 robot_turn = 1
@@ -89,7 +89,7 @@ def performance():
                 twist.angular.z = 0.2
                 pub_cmd_vel.publish(twist)
         else:
-            if current_yaw >= 55 or current_yaw <= 65:
+            if current_yaw >= 55 and current_yaw <= 65:
                 twist.angular.z = 0.0
                 pub_cmd_vel.publish(twist)
                 robot_turn = 0
@@ -228,7 +228,7 @@ def main():
                     #print(yaw)
                     pub.publish(yaw)  # Publish the yaw value
                     performance()
-                    
+
         except Exception as e:
             pass
 
