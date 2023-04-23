@@ -135,4 +135,7 @@ def main():
     performance_function()
 
 if __name__ == "__main__":
-    main()
+    while not rospy.is_shutdown():
+        main()
+    else:
+        pass
