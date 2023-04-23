@@ -30,11 +30,13 @@ def check_position():
     return position
 
 def stop_function(event):
+    print("Stop function called. Returning the robot to its original position.")
     global yaw, position, original_position, pub_cmd_vel
 
     # Rotate to 0 degrees
     target_yaw = 0
     while abs(yaw - target_yaw) > 0.01:
+        print("Rotating to 0 degrees")
         angular_speed = 0.2 if yaw < target_yaw else -0.2
         cmd = Twist()
         cmd.angular.z = angular_speed
@@ -44,6 +46,7 @@ def stop_function(event):
     # Move near original Z position
     target_z = original_position.z
     while abs(position.z - target_z) > 50:
+        print("Moving to original Z position")
         check_position()
         linear_speed = 0.1 if position.z < target_z else -0.1
         cmd = Twist()
@@ -54,6 +57,7 @@ def stop_function(event):
     # Move near original X position
     target_x = original_position.x
     while abs(position.x - target_x) > 50:
+        print("Moving to original X position")
         check_position()
         linear_speed = 0.1 if position.x < target_x else -0.1
         cmd = Twist()
@@ -62,6 +66,7 @@ def stop_function(event):
         rospy.sleep(0.1)
 
     # Stop and wait for shutdown
+    print("Stop Function Done")
     cmd = Twist()
     pub_cmd_vel.publish(cmd)
 
@@ -104,6 +109,9 @@ def performance_function():
         # Stop the movement
         cmd = Twist()
         pub_cmd_vel.publish(cmd)
+
+        # Print the movement and position after movement
+        print(f"Movement: {movement}, Position: x={position.x}, z={position.z}")
 
         # Rest for a random time between 10 and 60 seconds
         rest_time = random.uniform(10, 60)
