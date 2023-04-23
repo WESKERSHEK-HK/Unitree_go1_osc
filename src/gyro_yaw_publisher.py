@@ -21,7 +21,7 @@ current_yaw = 0
 origin = Point()
 robot_start = False
 robot_home = False
-start_delay=30
+start_delay=10
 
 def origin_setup(data):
     global origin, robot_start
@@ -169,7 +169,7 @@ def performance(pub_cmd_vel, angle_step=5, rest_min=10, rest_max=60):
 
     if robot_start == True:
         angles = [270, 60]
-
+        print('angle')
         for i in range(len(angles) - 1):
             start_angle = angles[i % len(angles)]
             end_angle = angles[(i + 1) % len(angles)]
