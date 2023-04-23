@@ -66,7 +66,7 @@ def stop_function(event):
         rospy.sleep(0.1)
 
     # Stop and wait for shutdown
-    print("Stop Function Done")
+    print("Stop and wait for shutdown")
     cmd = Twist()
     pub_cmd_vel.publish(cmd)
 
@@ -110,23 +110,29 @@ def performance_function():
         cmd = Twist()
         pub_cmd_vel.publish(cmd)
 
-       # Print the movement and position after movement
+        # Print the movement and position after movement
         print("Movement: {}, Position: x={}, z={}".format(movement, position.x, position.z))
 
         # Rest for a random time between 10 and 60 seconds
         rest_time = random.uniform(10, 60)
         rospy.sleep(rest_time)
 
-rospy.init_node("robot_move", anonymous=True)
-rospy.Subscriber("yaw_data", Float64, yaw_callback)
-rospy.Subscriber("/dog/position", Point, position_callback)
-pub_cmd_vel = rospy.Publisher("cmd_vel", Twist, queue_size=1)
+def main():
+    global yaw, position, original_position, pub_cmd_vel
 
-yaw = 0
-position = Point()
-original_position = check_position()
+    rospy.init_node("robot_move", anonymous=True)
+    rospy.Subscriber("yaw_data", Float64, yaw_callback)
+    rospy.Subscriber("/dog/position", Point, position_callback)
+    pub_cmd_vel = rospy.Publisher("cmd_vel", Twist, queue_size=1)
 
-# Schedule the stop_function to run after 30 minutes
-rospy.Timer(rospy.Duration(1800), stop_function, oneshot=True)
+    yaw = 0
+    position = Point()
+    original_position = check_position()
 
-performance_function()
+    # Schedule the stop_function to run after 30 minutes
+    rospy.Timer(rospy.Duration(1800), stop_function, oneshot=True)
+
+    performance_function()
+
+if __name__ == "__main__":
+    main()
