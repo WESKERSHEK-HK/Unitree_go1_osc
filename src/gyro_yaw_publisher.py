@@ -184,13 +184,16 @@ def main():
                 #print(value)
                 if "yaw" in key:
                     print(len(value))
-                    yaw = float(value[0:1])
-                    print(value)
+                    if len(value) < 8:
+                        yaw = float(value[0:1])
+                    else:
+                        yaw = float(value[0:0])
+                    print(yaw)
                     if yaw < 0:
                         yaw += 360
 
                     current_yaw = yaw
-                    #print(yaw)
+                    print(yaw)
                     pub.publish(yaw)  # Publish the yaw value
 
         except Exception as e:
