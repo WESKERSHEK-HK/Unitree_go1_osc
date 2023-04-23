@@ -135,10 +135,10 @@ def main():
     # Schedule the stop_function to run after 30 minutes
     #rospy.Timer(rospy.Duration(1800), stop_function, oneshot=True)
    
-    performance_function()
-
-if __name__ == "__main__":
     while not rospy.is_shutdown():
-        main()
+        performance_function()
     else:
         pass
+
+if __name__ == "__main__":
+    main()
