@@ -1,13 +1,22 @@
 #!/usr/bin/env python3
 
 import rospy
-from geometry_msgs.msg import Twist
-from std_msgs.msg import Empty
+from geometry_msgs.msg import Twist, Point
+from std_msgs.msg import Empty, Float64
 import sys
 import tty
 import termios
 from pythonosc import dispatcher, osc_server, udp_client
 import threading
+
+def cmd_vel_callback(msg):
+    osc_client = udp_client.SimpleUDPClient("192.168.1.130", 20000)
+    osc_client.send_message("/cmd_vel", [msg.linear.x, msg.linear.y, msg.linear.z, msg.angular.x, msg.angular.y, msg.angular.z])
+
+def handle_position_osc_message(unused_addr, x, y, z):
+    global position_pub
+    position = Point(x, y, z)
+    position_pub.publish(position)
 
 def getch():
     fd = sys.stdin.fileno()
@@ -103,14 +112,21 @@ def handle_osc_message(unused_addr, args, value):
         print(twist)
         pub.publish(twist)
 
-
+def yaw_data_callback(msg):
+    osc_client = udp_client.SimpleUDPClient("192.168.1.130", 20000)
+    osc_client.send_message("/yaw_data", msg.data)
 
 def main():
-    global pub, home_pub, paused, stop_pub
+    global pub, home_pub, paused, stop_pub, position_pub
     paused = False
+
+    rospy.init_node('keyboard_input_node', anonymous=True)
+
     home_pub = rospy.Publisher('dog/home', Empty, queue_size=1)
     stop_pub = rospy.Publisher('dog/stop', Empty, queue_size=1)
-    rospy.init_node('keyboard_input_node', anonymous=True)
+    position_pub = rospy.Publisher('dog/position', Point, queue_size=1)
+    rospy.Subscriber('cmd_vel', Twist, cmd_vel_callback)
+    rospy.Subscriber('yaw_data', Float64, yaw_data_callback)
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
     rospy.Subscriber('dog/homedone', Empty, homedone_callback)
 
@@ -126,8 +142,9 @@ def main():
     disp.map("/turn_right", handle_osc_message, ('turn_right'))
     disp.map("/stop", handle_osc_message, ('stop'))
     disp.map("/home", handle_home_osc_message)
+    disp.map("/position", handle_position_osc_message)
 
-    server = osc_server.ThreadingOSCUDPServer(('192.168.50.100', 10000), disp)
+    server = osc_server.ThreadingOSCUDPServer(('192.168.1.136', 10000), disp)
 
     keyboard_thread = threading.Thread(target=process_keyboard_input, args=(pub,))
     keyboard_thread.start()
