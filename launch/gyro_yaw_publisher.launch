@@ -1,4 +1,5 @@
 <launch>
   <!-- Start the gyro_yaw_publisher node -->
+  <node pkg="unitree_legged_real" type="twist_sub" name="node_twist_sub" output="screen"/>
   <node name="gyro_yaw_publisher" pkg="unitree_go1_osc" type="gyro_yaw_publisher.py" output="screen" />
 </launch>

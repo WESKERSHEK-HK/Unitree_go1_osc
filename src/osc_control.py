@@ -37,21 +37,21 @@ def process_keyboard_input(pub):
             if ch == 'q':
                 break
             elif ch == 'w':
-                twist.linear.x = 0.5
+                twist.linear.x = 0.2
             elif ch == 's':
-                twist.linear.x = -0.5
+                twist.linear.x = -0.2
             elif ch == 'a':
-                twist.linear.y = 0.5
+                twist.linear.y = 0.2
             elif ch == 'd':
-                twist.linear.y = -0.5
+                twist.linear.y = -0.2
             elif ch == 'j':
-                twist.angular.z = 1.0
+                twist.angular.z = 0.2
             elif ch == 'l':
-                twist.angular.z = -1.0
-            elif ch == 'i':
-                twist.angular.y = 0.0
+                twist.angular.z = -0.2
             elif ch == 'm':
-                twist.angular.y = -0.2
+                twist.linear.x = 0.0
+                twist.linear.y = 0.0
+                twist.angular.z = 0.0
 
             pub.publish(twist)
 
@@ -79,27 +79,31 @@ def handle_home_osc_message(unused_addr, args):
 def handle_osc_message(unused_addr, args, value):
     global pub, paused
     if not paused:
-        command = args
+        command = args[0]
         twist = Twist()
 
         if command == 'forward':
-            twist.linear.x = 0.1
+            twist.linear.x = 0.2
         elif command == 'backward':
-            twist.linear.x = -0.1
+            twist.linear.x = -0.2
         elif command == 'left':
-            twist.linear.y = 0.1
+            twist.linear.y = 0.2
         elif command == 'right':
-            twist.linear.y = -0.1
+            twist.linear.y = -0.2
         elif command == 'turn_left':
-            twist.angular.z = 0.1
+            twist.angular.z = 0.2
         elif command == 'turn_right':
-            twist.angular.z = -0.1
-        elif command == 'stand':
-            twist.angular.y = 0.0
-        elif command == 'sit':
-            twist.angular.y = -0.2
+            twist.angular.z = -0.2
+        elif command == 'stop':
+            twist.linear.x = 0.0
+            twist.linear.y = 0.0
+            twist.angular.z = 0.0
+        
         print('Received osc command: %s' %str(command))
+        print(twist)
         pub.publish(twist)
+
+
 
 def main():
     global pub, home_pub, paused, stop_pub
@@ -114,14 +118,13 @@ def main():
     timer = rospy.Timer(rospy.Duration(1800), stop_timer_callback, oneshot=True)
 
     disp = dispatcher.Dispatcher()
-    disp.map("/forward", handle_osc_message, (pub, 'forward'))
-    disp.map("/backward", handle_osc_message, (pub, 'backward'))
-    disp.map("/left", handle_osc_message, (pub, 'left'))
-    disp.map("/right", handle_osc_message, (pub, 'right'))
-    disp.map("/turn_left", handle_osc_message, (pub, 'turn_left'))
-    disp.map("/turn_right", handle_osc_message, (pub, 'turn_right'))
-    disp.map("/stand", handle_osc_message, (pub, 'stand'))
-    disp.map("/sit", handle_osc_message, (pub, 'sit'))
+    disp.map("/forward", handle_osc_message, ('forward'))
+    disp.map("/backward", handle_osc_message, ('backward'))
+    disp.map("/left", handle_osc_message, ('left'))
+    disp.map("/right", handle_osc_message, ('right'))
+    disp.map("/turn_left", handle_osc_message, ('turn_left'))
+    disp.map("/turn_right", handle_osc_message, ('turn_right'))
+    disp.map("/stop", handle_osc_message, ('stop'))
     disp.map("/home", handle_home_osc_message)
 
     server = osc_server.ThreadingOSCUDPServer(('192.168.50.100', 10000), disp)

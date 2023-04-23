@@ -106,13 +106,13 @@ def execute_turn(pub_cmd_vel, shortest_angle, turn_direction, tolerance=5, angul
             break
 
         pub_cmd_vel.publish(twist)
-        rospy.sleep(0.1)
+        rospy.sleep(0.3)
 
     twist.angular.z = 0
     pub_cmd_vel.publish(twist)
     rospy.loginfo("Turn completed.")
 
-def move_forward_to_origin(pub_cmd_vel, tolerance=0.1, linear_speed=0.1):
+def move_forward_to_origin(pub_cmd_vel, tolerance=0.1, linear_speed=0.5):
     rospy.loginfo("Moving forward to origin...")
 
     twist = Twist()
@@ -134,10 +134,15 @@ def move_forward_to_origin(pub_cmd_vel, tolerance=0.1, linear_speed=0.1):
     rospy.loginfo("Reached origin.")
 
 def sit_down_to_stop(pub_cmd_vel, tolerance=0.1, linear_speed=0.1):
-    rospy.loginfo("Sitting down to stop the robot...")
+    rospy.loginfo("Stop the robot...")
 
     twist = Twist()
-    twist.angular.y = -0.2
+    twist.linear.x = 0.0
+    twist.linear.y = 0.0
+    twist.linear.z = 0.0
+    twist.angular.x = 0.0
+    twist.angular.y = 0.0
+    twist.angular.z = 0.0
     pub_cmd_vel.publish(twist)
     rospy.sleep(2)
     
