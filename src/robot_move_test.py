@@ -127,6 +127,7 @@ def main():
     rospy.Subscriber("/dog/position", Point, position_callback)
     pub_cmd_vel = rospy.Publisher("cmd_vel", Twist, queue_size=1)
 
+    print('start' )
     yaw = 0
     position = Point()
     running = True
