@@ -60,7 +60,7 @@ def performance():
 def main():
     global pub_cmd_vel, pub_home_done
 
-    rospy.init_node("gyro_yaw_publisher", anonymous=True)
+    rospy.init_node("robot_move", anonymous=True)
     rospy.Subscriber("yaw_data", Float64, yaw_callback)
     rospy.Subscriber("/dog/home", Empty, home_callback)
 
