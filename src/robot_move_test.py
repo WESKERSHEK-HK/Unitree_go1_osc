@@ -110,8 +110,8 @@ def performance_function():
         cmd = Twist()
         pub_cmd_vel.publish(cmd)
 
-        # Print the movement and position after movement
-        print(f"Movement: {movement}, Position: x={position.x}, z={position.z}")
+       # Print the movement and position after movement
+        print("Movement: {}, Position: x={}, z={}".format(movement, position.x, position.z))
 
         # Rest for a random time between 10 and 60 seconds
         rest_time = random.uniform(10, 60)
