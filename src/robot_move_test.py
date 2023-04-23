@@ -118,6 +118,7 @@ def performance_function():
 
         # Rest for a random time between 10 and 60 seconds
         rest_time = random.uniform(10, 60)
+        print("Rest for {} sec".format(rest_time))
         rospy.sleep(rest_time)
 
 def main():
