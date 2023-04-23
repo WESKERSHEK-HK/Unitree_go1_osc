@@ -232,7 +232,7 @@ def main():
                     current_yaw = yaw
                     print(yaw)
                     pub.publish(yaw)  # Publish the yaw value
-                    #performance()
+                    performance()
 
         except Exception as e:
             pass
