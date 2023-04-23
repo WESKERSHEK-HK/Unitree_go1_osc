@@ -3,7 +3,6 @@
 import rospy
 import serial
 import math
-import random
 from std_msgs.msg import Float64, Empty
 from geometry_msgs.msg import Point, Twist
 
@@ -72,46 +71,6 @@ def home_callback(data):
         pub_home_done.publish(Empty())
 
         robot_home = False
-
-def performance():
-    global current_yaw, robot_home, pub_cmd_vel, robot_turn
-
-    angles = [270,60]
-    #rospy.loginfo("current_yaw: %f ", current_yaw)
-    if robot_home == False:
-        twist = Twist()
-        if robot_turn == 0:
-            if current_yaw >= 265 and current_yaw <= 275:
-                twist.angular.z = 0.0
-                pub_cmd_vel.publish(twist)
-                robot_turn = 1
-                rest_sec = random.randint(20,60)
-                rospy.loginfo("Rest for: %f sec", rest_sec)
-                rospy.sleep(rest_sec)
-                print("react 270 degree, start turning back")
-            else:
-                twist.angular.z = 0.2
-                pub_cmd_vel.publish(twist)
-        else:
-            if current_yaw >= 55 and current_yaw <= 65:
-                twist.angular.z = 0.0
-                pub_cmd_vel.publish(twist)
-                robot_turn = 0
-                rest_sec = random.randint(20,60)
-                rospy.loginfo("Rest for: %f sec", rest_sec)
-                rospy.sleep(rest_sec)
-                print("react 60 degree, start turning back")
-            else:
-                twist.angular.z = -0.2
-                pub_cmd_vel.publish(twist)
-        rospy.sleep(2)
-        twist.angular.z = 0.0
-        pub_cmd_vel.publish(twist)
-        print("stop Turning")
-        
-            
-
-        
 
 def calculate_angle_to_origin(position):
     dx = position.x - origin.x
@@ -230,9 +189,8 @@ def main():
                         yaw += 360
 
                     current_yaw = yaw
-                    print(yaw)
+                    #print(yaw)
                     pub.publish(yaw)  # Publish the yaw value
-                    performance()
 
         except Exception as e:
             pass
