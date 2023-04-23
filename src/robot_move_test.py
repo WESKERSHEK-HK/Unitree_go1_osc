@@ -80,7 +80,7 @@ def performance_function():
         movement = random.choice(["rotate_left", "rotate_right", "move_left", "move_right", "move_forward", "move_backward"])
 
         cmd = Twist()
-
+        print(movement)
         # Check if the movement would exceed limits
         if movement == "move_left" and position.z >= 1300:
             continue
