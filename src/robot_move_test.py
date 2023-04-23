@@ -131,7 +131,7 @@ def main():
 
     # Schedule the stop_function to run after 30 minutes
     rospy.Timer(rospy.Duration(1800), stop_function, oneshot=True)
-
+    print('start')
     performance_function()
 
 if __name__ == "__main__":
