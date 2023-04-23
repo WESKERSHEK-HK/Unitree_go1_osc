@@ -77,7 +77,7 @@ def performance():
     global current_yaw, robot_home, pub_cmd_vel, robot_turn
 
     angles = [270,60]
-    rospy.loginfo("current_yaw: %f ", current_yaw)
+    #rospy.loginfo("current_yaw: %f ", current_yaw)
     if robot_home == False:
         twist = Twist()
         if robot_turn == 0:
@@ -230,9 +230,9 @@ def main():
                         yaw += 360
 
                     current_yaw = yaw
-                    #print(yaw)
+                    print(yaw)
                     pub.publish(yaw)  # Publish the yaw value
-                    performance()
+                    #performance()
 
         except Exception as e:
             pass
