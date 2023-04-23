@@ -3,7 +3,6 @@
 import rospy
 import serial
 import math
-import time
 import random
 from std_msgs.msg import Float64, Empty
 from geometry_msgs.msg import Point, Twist
@@ -19,9 +18,9 @@ ser = serial.Serial(
 current_position = Point()
 current_yaw = 0
 origin = Point()
-robot_start = True
+robot_start = False
 robot_home = False
-start_delay=10
+robot_turn = 0
 
 def origin_setup(data):
     global origin, robot_start
@@ -38,11 +37,10 @@ def position_callback(data):
     if robot_start == False:
         origin_setup(current_position)
 
-def stop_callback():
-    global current_yaw, robot_home, performance_enabled
+def stop_callback(data):
+    global current_yaw, robot_home
     if robot_home == False:
         robot_home = True
-        rospy.loginfo("Performance stopped")
         angle_to_origin = calculate_angle_to_origin(current_position)
         rospy.loginfo("Angle to origin: %f degrees", angle_to_origin)
 
@@ -57,10 +55,9 @@ def stop_callback():
         
 
 def home_callback(data):
-    global current_yaw, robot_home
+    global current_yaw, robot_home ,pub_cmd_vel
     if robot_home == False:
         robot_home = True
-        rospy.loginfo("Performance stopped")
         angle_to_origin = calculate_angle_to_origin(current_position)
         rospy.loginfo("Angle to origin: %f degrees", angle_to_origin)
 
@@ -73,8 +70,42 @@ def home_callback(data):
         turn_to_zero_degrees(pub_cmd_vel)
 
         pub_home_done.publish(Empty())
-        rospy.loginfo("Performance started")
+
         robot_home = False
+
+def performance():
+    global current_yaw, robot_home, pub_cmd_vel, robot_turn
+
+    angles = [270,60]
+    if robot_home == False:
+        twist = Twist()
+        if robot_turn == 0:
+            if current_yaw >= 265 or current_yaw <= 275:
+                twist.angular.z = 0.0
+                pub_cmd_vel.publish(twist)
+                robot_turn = 1
+                print("react 270 degree, start turning back")
+            else:
+                twist.angular.z = 0.2
+                pub_cmd_vel.publish(twist)
+        else:
+            if current_yaw >= 55 or current_yaw <= 65:
+                twist.angular.z = 0.0
+                pub_cmd_vel.publish(twist)
+                robot_turn = 0
+                print("react 60 degree, start turning back")
+            else:
+                twist.angular.z = -0.2
+                pub_cmd_vel.publish(twist)
+        rospy.sleep(2)
+        twist.angular.z = 0.0
+        pub_cmd_vel.publish(twist)
+        print("stop Turning")
+        rest_sec = random.randint(20,60)
+        rospy.loginfo("Rest for: %f sec", rest_sec)
+        rospy.sleep(rest_sec)
+            
+
         
 
 def calculate_angle_to_origin(position):
@@ -86,7 +117,6 @@ def calculate_angle_to_origin(position):
 
 def calculate_shortest_angle(current_angle, target_angle):
     diff = target_angle - current_angle
-    rospy.loginfo("Shortest Angle %d ", (((diff + 180) % 360) - 180))
     return ((diff + 180) % 360) - 180
 
 def decide_turn_direction(shortest_angle):
@@ -104,7 +134,7 @@ def execute_turn(pub_cmd_vel, shortest_angle, turn_direction, tolerance=5, angul
     twist = Twist()
     twist.angular.z = turn_direction * angular_speed
 
-    rospy.loginfo("Turning to Target Angle %d ", twist.angular.z)
+    rospy.loginfo("Turning to face target angle...")
 
     while not rospy.is_shutdown():
         angle_error = calculate_shortest_angle(current_yaw, target_yaw)
@@ -165,53 +195,19 @@ def turn_to_zero_degrees(pub_cmd_vel, tolerance=5, angular_speed=0.1):
 
     rospy.loginfo("Facing 0 degrees.")
 
-def performance(pub_cmd_vel, angle_step=5, rest_min=10, rest_max=60):
-    global robot_start
-
-    if robot_start == True:
-        angles = [270, 60]
-
-        for i in range(len(angles) - 1):
-            start_angle = angles[i % len(angles)]
-            end_angle = angles[(i + 1) % len(angles)]
-
-            if end_angle > start_angle:
-                angle_range = range(start_angle, end_angle, angle_step)
-            else:
-                angle_range = range(start_angle, end_angle - 360, -angle_step)
-
-            for angle in angle_range:
-                if not robot_start:
-                    break
-
-                rospy.loginfo("Rotating to %d degrees", angle)
-                shortest_angle = calculate_shortest_angle(current_yaw, angle)
-                turn_direction = decide_turn_direction(shortest_angle)
-                execute_turn(pub_cmd_vel, shortest_angle, turn_direction)
-
-                rest_time = random.randint(rest_min, rest_max)
-                rospy.loginfo("Resting for %d seconds", rest_time)
-                time.sleep(rest_time)
-
 def main():
     global pub_cmd_vel, pub_home_done, current_yaw
 
     rospy.init_node("gyro_yaw_publisher", anonymous=True)
     rospy.Subscriber("/dog/position", Point, position_callback)
     rospy.Subscriber("/dog/home", Empty, home_callback)
+    rospy.Subscriber("/dog/stop", Empty, stop_callback)
 
     pub = rospy.Publisher("yaw_data", Float64, queue_size=1)
     pub_cmd_vel = rospy.Publisher("cmd_vel", Twist, queue_size=1)
     pub_home_done = rospy.Publisher("/dog/homedone", Empty, queue_size=1)
 
     rate = rospy.Rate(10)  # 10 Hz
-    
-    rospy.loginfo("Starting performance in %d seconds...", start_delay)
-    time.sleep(start_delay)
-
-    rospy.loginfo("Performance started")
-    
-    timer = rospy.Timer(rospy.Duration(1800), stop_callback, oneshot=True)
 
     while not rospy.is_shutdown():
         data = str(ser.readline())
@@ -231,12 +227,10 @@ def main():
                     current_yaw = yaw
                     #print(yaw)
                     pub.publish(yaw)  # Publish the yaw value
-
-            performance(pub_cmd_vel)
+                    performance()
+                    
         except Exception as e:
             pass
-
-
 
 
 if __name__ == "__main__":
