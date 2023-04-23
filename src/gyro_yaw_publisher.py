@@ -25,13 +25,15 @@ def origin_setup(data):
     global origin, robot_start
     origin.x = data.x
     origin.y = data.y
-    rospy.loginfo("Received origin: x = %f, y = %f", data.x, data.y)
-    robot_start = True
+    
+    if origin.z != 0.0:
+        rospy.loginfo("Received origin: x = %f, y = %f", data.x, data.y)
+        robot_start = True
     
 def position_callback(data):
     global current_position, robot_start
     current_position.x = data.x
-    current_position.y = data.y
+    current_position.y = data.z
     #rospy.loginfo("Received position: x = %f, y = %f", data.x, data.y)
     if robot_start == False:
         origin_setup(current_position)
@@ -163,9 +165,9 @@ def main():
     global pub_cmd_vel, pub_home_done, current_yaw
 
     rospy.init_node("gyro_yaw_publisher", anonymous=True)
-    rospy.Subscriber("/dog/position", Point, position_callback)
-    rospy.Subscriber("/dog/home", Empty, home_callback)
-    rospy.Subscriber("/dog/stop", Empty, stop_callback)
+    #rospy.Subscriber("/dog/position", Point, position_callback)
+    #rospy.Subscriber("/dog/home", Empty, home_callback)
+    #rospy.Subscriber("/dog/stop", Empty, stop_callback)
 
     pub = rospy.Publisher("yaw_data", Float64, queue_size=1)
     pub_cmd_vel = rospy.Publisher("cmd_vel", Twist, queue_size=1)
