@@ -19,7 +19,7 @@ ser = serial.Serial(
 current_position = Point()
 current_yaw = 0
 origin = Point()
-robot_start = False
+robot_start = True
 robot_home = False
 start_delay=10
 
@@ -166,22 +166,31 @@ def turn_to_zero_degrees(pub_cmd_vel, tolerance=5, angular_speed=0.1):
 
 def performance(pub_cmd_vel, angle_step=5, rest_min=10, rest_max=60):
     global robot_start
-    print('start')
+
     if robot_start == True:
         angles = [270, 60]
-        print ('angle')
-        for angle in [angle for _ in range(2) for angle in angles]:
-            if not robot_start:
-                break
 
-            rospy.loginfo("Rotating to %d degrees", angle)
-            shortest_angle = calculate_shortest_angle(current_yaw, angle)
-            turn_direction = decide_turn_direction(shortest_angle)
-            execute_turn(pub_cmd_vel, shortest_angle, turn_direction)
+        for i in range(len(angles) - 1):
+            start_angle = angles[i % len(angles)]
+            end_angle = angles[(i + 1) % len(angles)]
 
-            rest_time = random.randint(rest_min, rest_max)
-            rospy.loginfo("Resting for %d seconds", rest_time)
-            time.sleep(rest_time)
+            if end_angle > start_angle:
+                angle_range = range(start_angle, end_angle, angle_step)
+            else:
+                angle_range = range(start_angle, end_angle - 360, -angle_step)
+
+            for angle in angle_range:
+                if not robot_start:
+                    break
+
+                rospy.loginfo("Rotating to %d degrees", angle)
+                shortest_angle = calculate_shortest_angle(current_yaw, angle)
+                turn_direction = decide_turn_direction(shortest_angle)
+                execute_turn(pub_cmd_vel, shortest_angle, turn_direction)
+
+                rest_time = random.randint(rest_min, rest_max)
+                rospy.loginfo("Resting for %d seconds", rest_time)
+                time.sleep(rest_time)
 
 def main():
     global pub_cmd_vel, pub_home_done, current_yaw
