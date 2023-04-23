@@ -3,6 +3,8 @@
 import rospy
 import serial
 import math
+import time
+import random
 from std_msgs.msg import Float64, Empty
 from geometry_msgs.msg import Point, Twist
 
@@ -36,7 +38,7 @@ def position_callback(data):
         origin_setup(current_position)
 
 def stop_callback(data):
-    global current_yaw, robot_home
+    global current_yaw, robot_home, performance_enabled
     if robot_home == False:
         robot_home = True
         angle_to_origin = calculate_angle_to_origin(current_position)
@@ -158,6 +160,39 @@ def turn_to_zero_degrees(pub_cmd_vel, tolerance=5, angular_speed=0.1):
 
     rospy.loginfo("Facing 0 degrees.")
 
+def performance(pub_cmd_vel, start_delay=30, angle_step=5, rest_min=10, rest_max=60):
+    global robot_start
+
+    rospy.loginfo("Starting performance in %d seconds...", start_delay)
+    time.sleep(start_delay)
+
+    rospy.loginfo("Performance started")
+
+    while robot_start:
+        angles = [270, 60]
+
+        for i in range(len(angles) - 1):
+            start_angle = angles[i % len(angles)]
+            end_angle = angles[(i + 1) % len(angles)]
+
+            if end_angle > start_angle:
+                angle_range = range(start_angle, end_angle, angle_step)
+            else:
+                angle_range = range(start_angle, end_angle - 360, -angle_step)
+
+            for angle in angle_range:
+                if not performance_enabled:
+                    break
+
+                rospy.loginfo("Rotating to %d degrees", angle)
+                shortest_angle = calculate_shortest_angle(current_yaw, angle)
+                turn_direction = decide_turn_direction(shortest_angle)
+                execute_turn(pub_cmd_vel, shortest_angle, turn_direction)
+
+                rest_time = random.randint(rest_min, rest_max)
+                rospy.loginfo("Resting for %d seconds", rest_time)
+                time.sleep(rest_time)
+
 def main():
     global pub_cmd_vel, pub_home_done, current_yaw
 
@@ -193,6 +228,9 @@ def main():
 
         except Exception as e:
             pass
+        
+        performance(pub_cmd_vel)
+
 
 
 if __name__ == "__main__":
