@@ -187,7 +187,7 @@ def main():
                     if len(value) < 8:
                         yaw = float(value[0:2])
                     else:
-                        yaw = float(value[0:3])
+                        yaw = float(value[0:4])
                     print(yaw)
                     if yaw < 0:
                         yaw += 360
