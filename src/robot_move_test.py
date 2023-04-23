@@ -74,11 +74,12 @@ def stop_function(event):
 
 def performance_function():
     global pub_cmd_vel, position, running
+    rate = rospy.Rate(10)  # 10 Hz
 
     while running:
         # Randomly select a movement
         movement = random.choice(["rotate_left", "rotate_right", "move_left", "move_right", "move_forward", "move_backward"])
-
+        rate.sleep()
         cmd = Twist()
         print(movement)
         # Check if the movement would exceed limits
@@ -123,8 +124,8 @@ def main():
     global yaw, position, original_position, pub_cmd_vel, running
 
     rospy.init_node("robot_move", anonymous=True)
-    rospy.Subscriber("yaw_data", Float64, yaw_callback)
-    rospy.Subscriber("/dog/position", Point, position_callback)
+    rospy.Subscriber("yaw_data", Float64, yaw_callback, queue_size=1, buff_size=2**24)
+    rospy.Subscriber("/dog/position", Point, position_callback, queue_size=1, buff_size=2**24)
     pub_cmd_vel = rospy.Publisher("cmd_vel", Twist, queue_size=1)
 
     yaw = 0
