@@ -169,7 +169,7 @@ def performance(pub_cmd_vel, angle_step=5, rest_min=10, rest_max=60):
 
     if robot_start == True:
         angles = [270, 60]
-        print('angle')
+
         for i in range(len(angles) - 1):
             start_angle = angles[i % len(angles)]
             end_angle = angles[(i + 1) % len(angles)]
@@ -231,10 +231,10 @@ def main():
                     #print(yaw)
                     pub.publish(yaw)  # Publish the yaw value
 
+            performance(pub_cmd_vel)
         except Exception as e:
             pass
 
-        performance(pub_cmd_vel)
 
 
 
