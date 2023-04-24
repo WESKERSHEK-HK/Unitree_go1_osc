@@ -128,7 +128,7 @@ def stop_function(event):
     pub_cmd_vel.publish(cmd)
 
 def performance_function():
-    global pub_cmd_vel, position, running
+    global pub_cmd_vel, position, running, yaw
     rate = rospy.Rate(10)  # 10 Hz
 
     while running:
@@ -145,6 +145,10 @@ def performance_function():
         elif movement == "move_forward" and position.x >= 750:
             continue
         elif movement == "move_backward" and position.x <= 550:
+            continue
+        elif movement == "rotate_left" and (yaw <= 330 and yaw > 30):
+            continue
+        elif movement == "rotate_right" and (yaw > 330 or yaw <= 30):
             continue
 
         # Perform the movement for 1 second
