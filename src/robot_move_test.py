@@ -30,7 +30,7 @@ def check_position():
             if robot_start == False:
                 position.z = 1150
                 position.x = 650
-                position.z = 380
+                position.y = 380
                 rospy.loginfo("Test Mode, Set to default original position.")
                 robot_start = True
                 rospy.loginfo("Original Position Setup Done")
