@@ -132,7 +132,7 @@ def main():
     yaw = 0
     position = Point()
     running = True
-    #original_position = check_position()
+    original_position = check_position()
 
     # Schedule the stop_function to run after 30 minutes
     #rospy.Timer(rospy.Duration(1800), stop_function, oneshot=True)
