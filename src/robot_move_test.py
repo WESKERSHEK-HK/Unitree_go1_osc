@@ -52,7 +52,7 @@ def return_function():
     # Rotate to 0 degrees
     target_yaw = 0
     print("Rotating to 0 degrees")
-    while calculate_shortest_angle(yaw, target_yaw) > 5:
+    while calculate_shortest_angle(yaw, target_yaw) >= 6:
         angular_speed = 0.2 if yaw < target_yaw else -0.2
         cmd = Twist()
         cmd.angular.z = angular_speed
@@ -181,6 +181,7 @@ def performance_function():
             cmd.linear.x = -0.1
         
         if position.x >= 750 or position.x <= 550 or position.z >= 1300 or position.z <= 1000:
+            print(position)
             return_function()
         else:
             pub_cmd_vel.publish(cmd)
