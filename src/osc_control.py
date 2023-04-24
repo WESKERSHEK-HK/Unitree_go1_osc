@@ -105,13 +105,15 @@ def handle_osc_message(unused_addr, args, value):
         pub.publish(twist)
 
 def yaw_data_callback(msg):
-    global client_ip
-    osc_client = udp_client.SimpleUDPClient(client_ip, 20000)
-    osc_client.send_message("/yaw_data", msg.data)
+    global client_ip, last_yaw
+    if msg.data != last_yaw:
+        osc_client = udp_client.SimpleUDPClient(client_ip, 20000)
+        osc_client.send_message("/yaw_data", msg.data)
 
 def main():
-    global pub, home_pub, paused, stop_pub, position_pub, client_ip
+    global pub, home_pub, paused, stop_pub, position_pub, client_ip, last_yaw
     paused = False
+    last_yaw = 0.0
     client_ip = "192.168.3.139"
     device_ip = "192.168.3.124"
 
