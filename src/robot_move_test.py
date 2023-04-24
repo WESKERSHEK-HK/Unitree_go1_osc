@@ -6,6 +6,10 @@ import random
 from std_msgs.msg import Float64
 from geometry_msgs.msg import Point, Twist
 
+def calculate_shortest_angle(current_angle, target_angle):
+    diff = target_angle - current_angle
+    return ((diff + 180) % 360) - 180
+
 def yaw_callback(data):
     global yaw
     yaw = data.data
@@ -48,7 +52,7 @@ def return_function():
     # Rotate to 0 degrees
     target_yaw = 0
     print("Rotating to 0 degrees")
-    while abs(yaw - target_yaw) > 5:
+    while calculate_shortest_angle(yaw, target_yaw) > 5:
         angular_speed = 0.2 if yaw < target_yaw else -0.2
         cmd = Twist()
         cmd.angular.z = angular_speed
@@ -104,7 +108,7 @@ def stop_function(event):
     # Rotate to 0 degrees
     target_yaw = 0
     print("Rotating to 0 degrees")
-    while abs(yaw - target_yaw) > 5:
+    while calculate_shortest_angle(yaw, target_yaw) > 5:
         angular_speed = 0.2 if yaw < target_yaw else -0.2
         cmd = Twist()
         cmd.angular.z = angular_speed
