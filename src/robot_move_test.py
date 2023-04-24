@@ -23,10 +23,12 @@ def check_position():
         if current_position == position:
             continue
         elif position.z == 0.0 or abs(position.z - current_position.z) > 300 or abs(position.x - current_position.x) > 200:
-            if robot_start == False and position.z != 0.0:
-                position.z = 1350
-                position.x = 650
-                position.z = 380
+            if robot_start == False:
+                if current_position.z == 1350 and current_position.x == 650:
+                    position.z = 1150
+                    position.x = 650
+                    position.z = 380
+                    rospy.loginfo("Test Mode, Set to default original position.")
                 robot_start = True
                 rospy.loginfo("Original Position Setup Done")
                 break
