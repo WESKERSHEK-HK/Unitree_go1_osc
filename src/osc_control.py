@@ -10,7 +10,8 @@ from pythonosc import dispatcher, osc_server, udp_client
 import threading
 
 def cmd_vel_callback(msg):
-    osc_client = udp_client.SimpleUDPClient("192.168.1.130", 20000)
+    global client_ip
+    osc_client = udp_client.SimpleUDPClient(client_ip, 20000)
     osc_client.send_message("/cmd_vel", [msg.linear.x, msg.linear.y, msg.linear.z, msg.angular.x, msg.angular.y, msg.angular.z])
 
 def handle_position_osc_message(unused_addr, x, y, z):
@@ -64,15 +65,6 @@ def process_keyboard_input(pub):
 
             pub.publish(twist)
 
-def stop_timer_callback(event):
-    global stop_pub
-    empty_msg = Empty()
-    print('Timer expired: Sending stop command')
-    stop_pub.publish(empty_msg)
-    # Send OSC command
-    osc_client = udp_client.SimpleUDPClient("192.168.50.50", 20000)
-    osc_client.send_message("/switch", [])
-
 def homedone_callback(msg):
     global paused
     print('Received homedone message')
@@ -113,12 +105,15 @@ def handle_osc_message(unused_addr, args, value):
         pub.publish(twist)
 
 def yaw_data_callback(msg):
-    osc_client = udp_client.SimpleUDPClient("192.168.1.130", 20000)
+    global client_ip
+    osc_client = udp_client.SimpleUDPClient(client_ip, 20000)
     osc_client.send_message("/yaw_data", msg.data)
 
 def main():
-    global pub, home_pub, paused, stop_pub, position_pub
+    global pub, home_pub, paused, stop_pub, position_pub, client_ip
     paused = False
+    client_ip = "192.168.3.139"
+    device_ip = "192.168.3.124"
 
     rospy.init_node('keyboard_input_node', anonymous=True)
 
@@ -130,8 +125,6 @@ def main():
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
     rospy.Subscriber('dog/homedone', Empty, homedone_callback)
 
-    # Add a timer that expires after 30 minutes (1800 seconds)
-    timer = rospy.Timer(rospy.Duration(1800), stop_timer_callback, oneshot=True)
 
     disp = dispatcher.Dispatcher()
     disp.map("/forward", handle_osc_message, ('forward'))
@@ -144,7 +137,7 @@ def main():
     disp.map("/home", handle_home_osc_message)
     disp.map("/position", handle_position_osc_message)
 
-    server = osc_server.ThreadingOSCUDPServer(('192.168.1.136', 10000), disp)
+    server = osc_server.ThreadingOSCUDPServer((device_ip, 10000), disp)
 
     keyboard_thread = threading.Thread(target=process_keyboard_input, args=(pub,))
     keyboard_thread.start()
@@ -152,7 +145,7 @@ def main():
     rospy.loginfo("Serving on %s:%s", server.server_address[0], server.server_address[1])
     server.serve_forever()
 
-global pub,home_pub,paused
+global pub,home_pub,paused,client_ip
 
 if __name__ == '__main__':
     try:
