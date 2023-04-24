@@ -24,6 +24,7 @@ def check_position():
             continue
         elif position.z == 0.0 or abs(position.z - current_position.z) > 300:
             rospy.logwarn("Position data incorrect, waiting for an update.")
+            continue
         else:
             break
 
