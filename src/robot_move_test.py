@@ -54,6 +54,10 @@ def return_function():
         cmd = Twist()
         cmd.angular.z = angular_speed
         pub_cmd_vel.publish(cmd)
+        rospy.sleep(1)
+        # Stop the movement
+        cmd = Twist()
+        pub_cmd_vel.publish(cmd)
         rospy.sleep(0.1)
 
     # Move near original Z position
@@ -65,6 +69,10 @@ def return_function():
         cmd = Twist()
         cmd.linear.y = linear_speed
         pub_cmd_vel.publish(cmd)
+        rospy.sleep(1)
+        # Stop the movement
+        cmd = Twist()
+        pub_cmd_vel.publish(cmd)
         rospy.sleep(0.1)
 
     # Move near original X position
@@ -75,6 +83,10 @@ def return_function():
         linear_speed = 0.1 if position.x < target_x else -0.1
         cmd = Twist()
         cmd.linear.x = linear_speed
+        pub_cmd_vel.publish(cmd)
+        rospy.sleep(1)
+        # Stop the movement
+        cmd = Twist()
         pub_cmd_vel.publish(cmd)
         rospy.sleep(0.1)
 
