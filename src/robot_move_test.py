@@ -48,8 +48,8 @@ def return_function():
 
     # Rotate to 0 degrees
     target_yaw = 0
+    print("Rotating to 0 degrees")
     while abs(yaw - target_yaw) > 0.01:
-        print("Rotating to 0 degrees")
         angular_speed = 0.2 if yaw < target_yaw else -0.2
         cmd = Twist()
         cmd.angular.z = angular_speed
@@ -62,8 +62,8 @@ def return_function():
 
     # Move near original Z position
     target_z = original_position.z
+    print("Moving to original Z position")
     while abs(position.z - target_z) > 50:
-        print("Moving to original Z position")
         check_position()
         linear_speed = 0.1 if position.z < target_z else -0.1
         cmd = Twist()
@@ -77,8 +77,8 @@ def return_function():
 
     # Move near original X position
     target_x = original_position.x
+    print("Moving to original X position")
     while abs(position.x - target_x) > 50:
-        print("Moving to original X position")
         check_position()
         linear_speed = 0.1 if position.x < target_x else -0.1
         cmd = Twist()
@@ -104,8 +104,8 @@ def stop_function(event):
 
     # Rotate to 0 degrees
     target_yaw = 0
+    print("Rotating to 0 degrees")
     while abs(yaw - target_yaw) > 0.01:
-        print("Rotating to 0 degrees")
         angular_speed = 0.2 if yaw < target_yaw else -0.2
         cmd = Twist()
         cmd.angular.z = angular_speed
@@ -114,8 +114,8 @@ def stop_function(event):
 
     # Move near original Z position
     target_z = original_position.z
+    print("Moving to original Z position")
     while abs(position.z - target_z) > 50:
-        print("Moving to original Z position")
         check_position()
         linear_speed = 0.1 if position.z < target_z else -0.1
         cmd = Twist()
@@ -125,8 +125,8 @@ def stop_function(event):
 
     # Move near original X position
     target_x = original_position.x
+    print("Moving to original X position")
     while abs(position.x - target_x) > 50:
-        print("Moving to original X position")
         check_position()
         linear_speed = 0.1 if position.x < target_x else -0.1
         cmd = Twist()
