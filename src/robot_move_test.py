@@ -27,7 +27,7 @@ def check_position():
         if current_position == last_position:
             rospy.logwarn("Position data incorrect, waiting for an update.")
             position_error_count += 1
-            if position_error_count >= 100:
+            if position_error_count >= 50:
                 print("Returning the robot to its original position.")
                 return_function()
             continue
@@ -42,50 +42,79 @@ def check_position():
 
 def return_function():
     
-    global yaw, position, original_position, pub_cmd_vel, running
+    global yaw, position, original_position, pub_cmd_vel, running, return_count
 
     running = False
 
     # Rotate to 0 degrees
     target_yaw = 0
-    print("Rotating to 0 degrees")
-    while calculate_shortest_angle(yaw, target_yaw) > 5:
-        angular_speed = 0.2 if yaw < target_yaw else -0.2
-        cmd = Twist()
-        cmd.angular.z = angular_speed
-        pub_cmd_vel.publish(cmd)
-        rospy.sleep(1)
+    while return_count < 4:
+        if return_count == 0 or 2 or 4:
+            print("Rotating to 0 degrees")
+            while calculate_shortest_angle(yaw, target_yaw) > 5:
+                angular_speed = 0.2 if yaw < target_yaw else -0.2
+                cmd = Twist()
+                cmd.angular.z = angular_speed
+                pub_cmd_vel.publish(cmd)
+                #rospy.sleep(1)
+            else:
+                return_count += 1
+                print("Done Rotate to 0 degrees")
+                rospy.sleep(1)
         
+        elif return_count == 1:    
 
-    # Move near original Z position
-    target_z = original_position.z
-    print("Moving to original Z position")
-    while abs(position.z - target_z) > 0.2:
-        check_position()
-        linear_speed = 0.1 if position.z < target_z else -0.1
-        cmd = Twist()
-        cmd.linear.y = linear_speed
-        pub_cmd_vel.publish(cmd)
-        rospy.sleep(1)
-        
+            # Move near original Z position
+            target_z = original_position.z
+            print("Moving to original Z position")
+            while abs(position.z - target_z) > 0.2:
+                check_position()
+                linear_speed = 0.1 if position.z < target_z else -0.1
+                cmd = Twist()
+                cmd.linear.y = linear_speed
+                pub_cmd_vel.publish(cmd)
+                #rospy.sleep(1)
+            else:
+                return_count = 2
+                print("Done Moving to original Z position")
+                rospy.sleep(1)
+            
+        elif return_count == 3:
+            # Move near original X position
+            target_x = original_position.x
+            print("Moving to original X position")
+            while abs(position.x - target_x) > 0.05:
+                check_position()
+                linear_speed = 0.1 if position.x < target_x else -0.1
+                cmd = Twist()
+                cmd.linear.x = linear_speed
+                pub_cmd_vel.publish(cmd)
+                #rospy.sleep(1)
+            else:
+                return_count = 3
+                print("Done Moving to original X position")
+                rospy.sleep(1)
 
-    # Move near original X position
-    target_x = original_position.x
-    print("Moving to original X position")
-    while abs(position.x - target_x) > 0.05:
-        check_position()
-        linear_speed = 0.1 if position.x < target_x else -0.1
-        cmd = Twist()
-        cmd.linear.x = linear_speed
-        pub_cmd_vel.publish(cmd)
-        rospy.sleep(1)
-        
+        elif return_count == 3:
+            print("Rotating to 0 degrees")
+            while calculate_shortest_angle(yaw, target_yaw) > 5:
+                angular_speed = 0.2 if yaw < target_yaw else -0.2
+                cmd = Twist()
+                cmd.angular.z = angular_speed
+                pub_cmd_vel.publish(cmd)
+                #rospy.sleep(1)
+            else:
+                return_count = 3
+                print("Done Rotate to 0 degrees")
+                rospy.sleep(1)
 
+        elif return_count == 5:
+            break
     # Stop and wait for shutdown
-    print("Back to original position successful")
-    cmd = Twist()
-    pub_cmd_vel.publish(cmd)
-    running = True
+        print("Back to original position successful")
+        cmd = Twist()
+        pub_cmd_vel.publish(cmd)
+        running = True
 
 def stop_function(event):
     global yaw, position, original_position, pub_cmd_vel, running
@@ -148,7 +177,7 @@ def performance_function():
             rospy.sleep(rest_time)
 
 def main():
-    global yaw, position, original_position, pub_cmd_vel, running, robot_start, limit_x, limit_z, position_error_count, last_position
+    global yaw, position, original_position, pub_cmd_vel, running, robot_start, limit_x, limit_z, position_error_count, last_position, return_count
 
     rospy.init_node("robot_move", anonymous=True)
     rospy.Subscriber("yaw_data", Float64, yaw_callback, queue_size=1, buff_size=2**24)
@@ -163,6 +192,7 @@ def main():
     limit_x = [-3,3] #min, max
     limit_z = [0.8,1.5] #min, max
     position_error_count = 0
+    return_count = 0
     original_position = check_position()
 
     # Schedule the stop_function to run after 30 minutes
