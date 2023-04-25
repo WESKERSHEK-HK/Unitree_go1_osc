@@ -38,6 +38,7 @@ def check_position():
             if position_error_count >= 50:
                 print("Returning the robot to its original position.")
                 return_function()
+                position_error_count = 0
             continue
         
         else:
