@@ -226,7 +226,7 @@ def main():
     original_position = check_position()
 
     # Schedule the stop_function to run after 30 minutes
-    rospy.Timer(rospy.Duration(30), stop_function, oneshot=True)
+    rospy.Timer(rospy.Duration(1800), stop_function, oneshot=True)
 
     print('start performance')
     performance_function()
