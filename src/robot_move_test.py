@@ -26,6 +26,10 @@ def check_position():
         rospy.sleep(0.1)
         if current_position == last_position:
             if robot_start == False:
+                robot_start = True
+                last_position = position
+                position_error_count = 0
+                print("Original position setup done")
                 break
             else:
                 rospy.logwarn("Position data incorrect, waiting for an update.")
@@ -37,7 +41,6 @@ def check_position():
             continue
         
         else:
-            robot_start = True
             last_position = position
             position_error_count = 0
             break
@@ -60,7 +63,12 @@ def return_function():
                 pub_cmd_vel.publish(cmd)
                 #rospy.sleep(1)
             else:
-                return_count += 1
+                if return_count == 0:
+                    return_count = 1
+                elif return_count == 2:
+                    return_count = 3
+                elif return_count == 4:
+                    return_count = 5
                 print("Done Rotate to 0 degrees")
                 rospy.sleep(1)
         
@@ -111,12 +119,12 @@ def return_function():
                 rospy.sleep(1)
 
         elif return_count == 5:
-            return_count = 0
             break
     # Stop and wait for shutdown
-        print("Back to original position successful")
-        cmd = Twist()
-        pub_cmd_vel.publish(cmd)
+    return_count = 0
+    print("Back to original position successful")
+    cmd = Twist()
+    pub_cmd_vel.publish(cmd)
 
 def stop_function(event):
     global yaw, position, original_position, pub_cmd_vel, running
