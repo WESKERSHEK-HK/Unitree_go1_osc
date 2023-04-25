@@ -25,10 +25,12 @@ def check_position():
         current_position = position
         rospy.sleep(0.1)
         if current_position == last_position:
-            if original_position != current_position:
+            if robot_start == False:
                 break
-            rospy.logwarn("Position data incorrect, waiting for an update.")
-            position_error_count += 1
+            else:
+                rospy.logwarn("Position data incorrect, waiting for an update.")
+                position_error_count += 1
+                
             if position_error_count >= 50:
                 print("Returning the robot to its original position.")
                 return_function()
