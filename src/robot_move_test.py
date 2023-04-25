@@ -19,7 +19,7 @@ def position_callback(data):
     position = data
 
 def check_position():
-    global position, last_position , robot_start, position_error_count, original_position
+    global position, last_position , robot_start, position_error_count, original_position ,force_quit
 
     while True:
         current_position = position
@@ -32,12 +32,14 @@ def check_position():
                 print("Original position setup done")
                 break
             else:
-                rospy.logwarn("Position data incorrect, waiting for an update.")
-                position_error_count += 1
+                if not force_quit:
+                    rospy.logwarn("Position data incorrect, waiting for an update.")
+                    position_error_count += 1
 
             if position_error_count >= 50:
-                print("Returning the robot to its original position.")
-                return_function(0)
+                if not force_quit:
+                    print("Returning the robot to its original position.")
+                    return_function(0)
                 position_error_count = 0
             continue
         
