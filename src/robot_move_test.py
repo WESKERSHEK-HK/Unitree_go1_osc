@@ -19,12 +19,14 @@ def position_callback(data):
     position = data
 
 def check_position():
-    global position, last_position , robot_start, position_error_count
+    global position, last_position , robot_start, position_error_count, original_position
 
     while True:
         current_position = position
         rospy.sleep(0.1)
         if current_position == last_position:
+            if original_position != current_position:
+                break
             rospy.logwarn("Position data incorrect, waiting for an update.")
             position_error_count += 1
             if position_error_count >= 50:
@@ -187,6 +189,7 @@ def main():
     yaw = 0
     position = Point()
     last_position = Point()
+    original_position = Point()
     running = True
     robot_start = False
     limit_x = [-3,3] #min, max
