@@ -101,21 +101,8 @@ def return_function():
                 pub_cmd_vel.publish(cmd)
                 #rospy.sleep(1)
             else:
-                return_count = 3
+                return_count = 4
                 print("Done Moving to original X position")
-                rospy.sleep(1)
-
-        elif return_count == 3:
-            print("Rotating to 0 degrees")
-            while calculate_shortest_angle(yaw, target_yaw) > 5:
-                angular_speed = 0.2 if yaw < target_yaw else -0.2
-                cmd = Twist()
-                cmd.angular.z = angular_speed
-                pub_cmd_vel.publish(cmd)
-                #rospy.sleep(1)
-            else:
-                return_count = 3
-                print("Done Rotate to 0 degrees")
                 rospy.sleep(1)
 
         elif return_count == 5:
