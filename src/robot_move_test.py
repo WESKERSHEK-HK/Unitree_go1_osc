@@ -136,9 +136,10 @@ def return_function(mode):
     pub_cmd_vel.publish(cmd)
 
 def stop_function(event):
-    global yaw, position, original_position, pub_cmd_vel, running
+    global yaw, position, original_position, pub_cmd_vel, running, force_quit
 
     print("Stop function called. Returning the robot to its original position.")
+    force_quit = True
     running = False
 
     return_function(1)
