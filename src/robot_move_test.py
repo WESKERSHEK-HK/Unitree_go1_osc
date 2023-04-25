@@ -157,7 +157,7 @@ def performance_function():
         if position.x >= limit_x[1] or position.x <= limit_x[0] or position.z >= limit_z[1] or position.z <= limit_z[0]:
             
             print("React limit. Returning the robot to its original position.")
-            print("Limit_x: {}, Limit_z: {}, Current_Position:{}".format(limit_x, limit_z.x, position))
+            print("Limit_x: {}, Limit_z: {}, Current_Position:{}".format(limit_x, limit_z, position))
             return_function()
 
             continue
