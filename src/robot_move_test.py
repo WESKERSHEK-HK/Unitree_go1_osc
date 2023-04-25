@@ -126,7 +126,7 @@ def performance_function():
             print("React limit. Returning the robot to its original position.")
             print(position)
             return_function()
-            
+
             continue
         else:
             pub_cmd_vel.publish(cmd)
@@ -160,8 +160,8 @@ def main():
     last_position = Point()
     running = True
     robot_start = False
-    limit_x = []
-    limit_z = []
+    limit_x = [-3,3] #min, max
+    limit_z = [0.8,1.5] #min, max
     position_error_count = 0
     original_position = check_position()
 
