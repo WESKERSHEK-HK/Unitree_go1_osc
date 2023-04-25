@@ -37,7 +37,7 @@ def check_position():
 
             if position_error_count >= 50:
                 print("Returning the robot to its original position.")
-                return_function()
+                return_function(0)
                 position_error_count = 0
             continue
         
@@ -48,22 +48,29 @@ def check_position():
 
     return position
 
-def return_function():
+def return_function(mode):
     
-    global yaw, position, original_position, pub_cmd_vel, running, return_count
+    global yaw, position, original_position, pub_cmd_vel, running, return_count, force_quit
 
     # Rotate to 0 degrees
     target_yaw = 0
+    
     while return_count < 4:
         if return_count == 0 or return_count == 2 or return_count == 4:
             print("Rotating to 0 degrees")
             while calculate_shortest_angle(yaw, target_yaw) > 5:
+                if force_quit and mode != 1:
+                    return_count = 5
+                    break
                 angular_speed = 0.2 if yaw < target_yaw else -0.2
                 cmd = Twist()
                 cmd.angular.z = angular_speed
                 pub_cmd_vel.publish(cmd)
                 #rospy.sleep(1)
             else:
+                if force_quit and mode != 1:
+                    return_count = 5
+                    break
                 if return_count == 0:
                     return_count = 1
                 elif return_count == 2:
@@ -79,6 +86,9 @@ def return_function():
             target_z = original_position.z
             print("Moving to original Z position")
             while abs(position.z - target_z) > 0.2:
+                if force_quit and mode != 1:
+                    return_count = 5
+                    break
                 check_position()
                 linear_speed = 0.1 if position.z < target_z else -0.1
                 cmd = Twist()
@@ -86,15 +96,22 @@ def return_function():
                 pub_cmd_vel.publish(cmd)
                 #rospy.sleep(1)
             else:
+                if force_quit and mode != 1:
+                    return_count = 5
+                    break
                 return_count = 2
                 print("Done Moving to original Z position")
                 rospy.sleep(1)
             
         elif return_count == 3:
+            
             # Move near original X position
             target_x = original_position.x
             print("Moving to original X position")
             while abs(position.x - target_x) > 0.05:
+                if force_quit and mode != 1:
+                    return_count = 5
+                    break
                 check_position()
                 linear_speed = 0.1 if position.x < target_x else -0.1
                 cmd = Twist()
@@ -102,15 +119,19 @@ def return_function():
                 pub_cmd_vel.publish(cmd)
                 #rospy.sleep(1)
             else:
+                if force_quit and mode != 1:
+                    return_count = 5
+                    break
                 return_count = 4
                 print("Done Moving to original X position")
                 rospy.sleep(1)
 
-        elif return_count == 5:
+        elif return_count == 5 and force_quit:
             break
     # Stop and wait for shutdown
     return_count = 0
-    print("Back to original position successful")
+    if not force_quit:
+        print("Back to original position successful")
     cmd = Twist()
     pub_cmd_vel.publish(cmd)
 
@@ -120,7 +141,7 @@ def stop_function(event):
     print("Stop function called. Returning the robot to its original position.")
     running = False
 
-    return_function()
+    return_function(1)
 
     print("Waiting to shutdown")
 
@@ -129,6 +150,7 @@ def performance_function():
     rate = rospy.Rate(10)  # 10 Hz
 
     while running:
+        
         # Randomly select a movement
         movement = random.choice(["rotate_left", "rotate_right", "move_left", "move_right", "move_forward", "move_backward"])
         rate.sleep()
@@ -157,7 +179,7 @@ def performance_function():
             
             print("React limit. Returning the robot to its original position.")
             #print("Limit_x: {}, Limit_z: {}, Current_Position:{}".format(limit_x, limit_z, position))
-            return_function()
+            return_function(0)
 
             continue
         else:
@@ -180,7 +202,7 @@ def performance_function():
             rospy.sleep(rest_time)
 
 def main():
-    global yaw, position, original_position, pub_cmd_vel, running, robot_start, limit_x, limit_z, position_error_count, last_position, return_count
+    global yaw, position, original_position, pub_cmd_vel, running, robot_start, limit_x, limit_z, position_error_count, last_position, return_count, force_quit
 
     rospy.init_node("robot_move", anonymous=True)
     rospy.Subscriber("yaw_data", Float64, yaw_callback, queue_size=1, buff_size=2**24)
@@ -197,6 +219,7 @@ def main():
     limit_z = [0.8,1.5] #min, max
     position_error_count = 0
     return_count = 0
+    force_quit = False
     original_position = check_position()
 
     # Schedule the stop_function to run after 30 minutes
