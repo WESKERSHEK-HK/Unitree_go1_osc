@@ -54,7 +54,7 @@ def return_function():
     # Rotate to 0 degrees
     target_yaw = 0
     while return_count < 4:
-        if return_count == 0 or 2 or 4:
+        if return_count == 0 or return_count == 2 or return_count == 4:
             print("Rotating to 0 degrees")
             while calculate_shortest_angle(yaw, target_yaw) > 5:
                 angular_speed = 0.2 if yaw < target_yaw else -0.2
