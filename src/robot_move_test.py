@@ -28,6 +28,7 @@ def check_position():
             rospy.logwarn("Position data incorrect, waiting for an update.")
             position_error_count += 1
             if position_error_count >= 100:
+                print("Returning the robot to its original position.")
                 return_function()
             continue
         
@@ -40,7 +41,7 @@ def check_position():
     return position
 
 def return_function():
-    print("React limit. Returning the robot to its original position.")
+    
     global yaw, position, original_position, pub_cmd_vel, running
 
     running = False
@@ -87,47 +88,12 @@ def return_function():
     running = True
 
 def stop_function(event):
-    print("Stop function called. Returning the robot to its original position.")
     global yaw, position, original_position, pub_cmd_vel, running
 
+    print("Stop function called. Returning the robot to its original position.")
     running = False
 
-    # Rotate to 0 degrees
-    target_yaw = 0
-    print("Rotating to 0 degrees")
-    while calculate_shortest_angle(yaw, target_yaw) > 5:
-        angular_speed = 0.2 if yaw < target_yaw else -0.2
-        cmd = Twist()
-        cmd.angular.z = angular_speed
-        pub_cmd_vel.publish(cmd)
-        rospy.sleep(0.1)
-
-    # Move near original Z position
-    target_z = original_position.z
-    print("Moving to original Z position")
-    while abs(position.z - target_z) > 0.2:
-        check_position()
-        linear_speed = 0.1 if position.z < target_z else -0.1
-        cmd = Twist()
-        cmd.linear.y = linear_speed
-        pub_cmd_vel.publish(cmd)
-        rospy.sleep(0.1)
-
-    # Move near original X position
-    target_x = original_position.x
-    print("Moving to original X position")
-    while abs(position.x - target_x) > 0.05:
-        check_position()
-        linear_speed = 0.1 if position.x < target_x else -0.1
-        cmd = Twist()
-        cmd.linear.x = linear_speed
-        pub_cmd_vel.publish(cmd)
-        rospy.sleep(0.1)
-
-    # Stop and wait for shutdown
-    print("Stop and wait for shutdown")
-    cmd = Twist()
-    pub_cmd_vel.publish(cmd)
+    return_function()
 
 def performance_function():
     global pub_cmd_vel, position, running, yaw, limit_x, limit_z
@@ -156,8 +122,11 @@ def performance_function():
             cmd.linear.x = -0.1
         
         if position.x >= limit_x[1] or position.x <= limit_x[0] or position.z >= limit_z[1] or position.z <= limit_z[0]:
+            
+            print("React limit. Returning the robot to its original position.")
             print(position)
             return_function()
+            
             continue
         else:
             pub_cmd_vel.publish(cmd)
