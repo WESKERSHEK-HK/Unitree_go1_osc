@@ -30,7 +30,7 @@ def check_position():
             else:
                 rospy.logwarn("Position data incorrect, waiting for an update.")
                 position_error_count += 1
-                
+
             if position_error_count >= 50:
                 print("Returning the robot to its original position.")
                 return_function()
@@ -47,8 +47,6 @@ def check_position():
 def return_function():
     
     global yaw, position, original_position, pub_cmd_vel, running, return_count
-
-    running = False
 
     # Rotate to 0 degrees
     target_yaw = 0
@@ -113,12 +111,12 @@ def return_function():
                 rospy.sleep(1)
 
         elif return_count == 5:
+            return_count = 0
             break
     # Stop and wait for shutdown
         print("Back to original position successful")
         cmd = Twist()
         pub_cmd_vel.publish(cmd)
-        running = True
 
 def stop_function(event):
     global yaw, position, original_position, pub_cmd_vel, running
@@ -127,6 +125,8 @@ def stop_function(event):
     running = False
 
     return_function()
+
+    print("Waiting to shutdown")
 
 def performance_function():
     global pub_cmd_vel, position, running, yaw, limit_x, limit_z
@@ -157,7 +157,7 @@ def performance_function():
         if position.x >= limit_x[1] or position.x <= limit_x[0] or position.z >= limit_z[1] or position.z <= limit_z[0]:
             
             print("React limit. Returning the robot to its original position.")
-            print(position)
+            print("Limit_x: {}, Limit_z: {}, Current_Position:{}".format(limit_x, limit_z.x, position))
             return_function()
 
             continue
