@@ -154,10 +154,13 @@ def performance_function():
         elif movement == "move_backward":
             cmd.linear.x = -0.1
         
-        if position.x >= limit_x[1] or position.x <= limit_x[0] or position.z >= limit_z[1] or position.z <= limit_z[0]:
+
+        print("Limit_x: {}, Limit_z: {}, Current_Position:{}".format(limit_x, limit_z, position))
+
+        if position.x > limit_x[1] or position.x < limit_x[0] or position.z > limit_z[1] or position.z < limit_z[0]:
             
             print("React limit. Returning the robot to its original position.")
-            print("Limit_x: {}, Limit_z: {}, Current_Position:{}".format(limit_x, limit_z, position))
+            #print("Limit_x: {}, Limit_z: {}, Current_Position:{}".format(limit_x, limit_z, position))
             return_function()
 
             continue
@@ -194,7 +197,7 @@ def main():
     original_position = Point()
     running = True
     robot_start = False
-    limit_x = [-3,3] #min, max
+    limit_x = [-3.0,3.0] #min, max
     limit_z = [0.8,1.5] #min, max
     position_error_count = 0
     return_count = 0
