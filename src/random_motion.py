@@ -80,7 +80,7 @@ def main():
 
         # Delay between 10 to 30 seconds
         delay = random.uniform(10, 30)
-        print(f"Delaying for {delay:.2f} seconds")
+        print("Delaying for {} seconds".format(delay))
         time.sleep(delay)
 
 if __name__ == '__main__':
