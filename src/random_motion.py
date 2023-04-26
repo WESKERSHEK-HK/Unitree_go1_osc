@@ -74,7 +74,9 @@ def main():
             pub.publish(selected_motion)
             if motiontime >= 1450:
                 break
-        
+
+        rospy.sleep(1)
+
         # Reset motion to neutral position
         print("Resetting motion to neutral position")
         ori_motion = reset_motion(selected_motion)
@@ -88,6 +90,8 @@ def main():
             pub.publish(selected_motion)
             if motiontime >= 1450:
                 break
+
+        rospy.sleep(1)
 
         # Delay between 10 to 30 seconds
         delay = random.uniform(10, 30)
