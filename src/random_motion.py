@@ -51,9 +51,9 @@ def main():
     while not rospy.is_shutdown():
 
         #high_cmd_ros.header.stamp = rospy.Time.now()
-        high_cmd_ros.head[0] = '0xFE'
-        high_cmd_ros.head[1] = '0xEF'
-        high_cmd_ros.levelFlag = 'HIGHLEVEL'
+        #high_cmd_ros.head[0] = '0xFE'
+        #high_cmd_ros.head[1] = '0xEF'
+        high_cmd_ros.levelFlag = 1
         high_cmd_ros.mode = 1
 
         # Reset other motion parameters
