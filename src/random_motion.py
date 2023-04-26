@@ -69,10 +69,10 @@ def main():
         selected_motion = random_motion(high_cmd_ros)
         #print("Motion: {}".format(selected_motion))
         motiontime = 0
-        while motiontime < 1000:
+        while motiontime < 1450:
             motiontime += 2
             pub.publish(selected_motion)
-            if motiontime >= 1000:
+            if motiontime >= 1450:
                 break
         
         # Reset motion to neutral position
@@ -83,10 +83,10 @@ def main():
         pub.publish(ori_motion)
         
         motiontime = 0
-        while motiontime < 1000:
+        while motiontime < 1450:
             motiontime += 2
             pub.publish(selected_motion)
-            if motiontime >= 1000:
+            if motiontime >= 1450:
                 break
 
         # Delay between 10 to 30 seconds
