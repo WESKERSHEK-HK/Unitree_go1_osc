@@ -67,23 +67,27 @@ def main():
 
         # Select a random motion and execute it
         selected_motion = random_motion(high_cmd_ros)
-        print("Motion: {}".format(selected_motion))
-        count = 0
-        while count < 1000:
-            count += 2
+        #print("Motion: {}".format(selected_motion))
+        motiontime = 0
+        while motiontime < 1000:
+            motiontime += 2
             pub.publish(selected_motion)
+            if motiontime >= 1000:
+                break
         
         # Reset motion to neutral position
         print("Resetting motion to neutral position")
         ori_motion = reset_motion(selected_motion)
 
-        print("Motion: {}".format(selected_motion))
+        #print("Motion: {}".format(selected_motion))
         pub.publish(ori_motion)
         
-        count = 0
-        while count < 1000:
-            count += 2
+        motiontime = 0
+        while motiontime < 1000:
+            motiontime += 2
             pub.publish(selected_motion)
+            if motiontime >= 1000:
+                break
 
         # Delay between 10 to 30 seconds
         delay = random.uniform(10, 30)
