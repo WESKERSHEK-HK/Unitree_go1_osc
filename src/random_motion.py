@@ -54,7 +54,7 @@ def main():
         print(selected_motion['description'])
         selected_motion['motion']()
 
-        high_cmd_ros.header.stamp = rospy.Time.now()
+        #high_cmd_ros.header.stamp = rospy.Time.now()
         high_cmd_ros.levelFlag = 1
         high_cmd_ros.mode = 1
 
@@ -74,7 +74,7 @@ def main():
         print("Resetting motion to neutral position")
         reset_motion()
 
-        high_cmd_ros.header.stamp = rospy.Time.now()
+        #high_cmd_ros.header.stamp = rospy.Time.now()
         pub.publish(high_cmd_ros)
         loop_rate.sleep()
 
