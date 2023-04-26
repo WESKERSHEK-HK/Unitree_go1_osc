@@ -48,6 +48,9 @@ def main():
     motiontime = 0
     high_cmd_ros = HighCmd()
 
+    print('Init Done')
+    rospy.sleep(2)
+
     while not rospy.is_shutdown():
 
         #high_cmd_ros.header.stamp = rospy.Time.now()
@@ -93,8 +96,8 @@ def main():
 
         rospy.sleep(1)
 
-        # Delay between 10 to 30 seconds
-        delay = random.uniform(10, 30)
+        # Delay between 20 to 120 seconds
+        delay = random.uniform(20, 120)
         print("Delaying for {} seconds".format(delay))
         time.sleep(delay)
 
