@@ -69,7 +69,7 @@ def main():
         selected_motion = random_motion(high_cmd_ros)
         
         pub.publish(selected_motion)
-        loop_rate.sleep()
+        rospy.sleep(1)
 
         # Reset motion to neutral position
         print("Resetting motion to neutral position")
@@ -77,7 +77,7 @@ def main():
 
         #high_cmd_ros.header.stamp = rospy.Time.now()
         pub.publish(ori_motion)
-        loop_rate.sleep()
+        rospy.sleep(1)
 
         # Delay between 10 to 30 seconds
         delay = random.uniform(10, 30)
