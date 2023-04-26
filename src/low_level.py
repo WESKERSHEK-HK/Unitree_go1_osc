@@ -32,7 +32,7 @@ def motor_control(cmd_publisher, leg_index, duration):
     # Set desired joint angles for the specified leg
     target_position = [0, -0.8, 1.6] if leg_index % 2 == 0 else [0, 0.8, -1.6]
     for i in range(3):
-        cmd.q1[leg_index * 3 + i] = target_position[i]
+        cmd.q[leg_index * 3 + i] = target_position[i]
     
     cmd.duration = duration  # Time duration in milliseconds
 
