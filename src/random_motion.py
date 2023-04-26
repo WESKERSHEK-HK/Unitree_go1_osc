@@ -72,7 +72,7 @@ def main():
         while True:
             motiontime += 2
             pub.publish(selected_motion)
-            if motiontime > 4000:
+            if motiontime > 3500:
                 break
 
         rospy.sleep(1)
@@ -88,7 +88,7 @@ def main():
         while True:
             motiontime += 2
             pub.publish(selected_motion)
-            if motiontime > 4000:
+            if motiontime > 3500:
                 break
 
         rospy.sleep(1)
