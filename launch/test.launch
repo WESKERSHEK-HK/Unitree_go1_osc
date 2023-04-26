@@ -1,4 +1,4 @@
 <launch>
   <!-- Start the gyro_yaw_publisher node -->
-  <node name="robot_move" pkg="unitree_go1_osc" type="robot_move_test.py" output="screen" />
+  <node name="random_motion" pkg="unitree_go1_osc" type="random_motion.py" output="screen" />
 </launch>
