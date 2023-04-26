@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 import random
-from unitree_legged_msgs.msg import HighCmd, LowCmd
+from unitree_legged_msgs.msg import HighCmd, LowCmd, HighState
 
 def sit_down(cmd_publisher):
     cmd = HighCmd()
@@ -33,7 +33,7 @@ def motor_control(cmd_publisher, leg_index, duration):
     target_position = [0, -0.8, 1.6] if leg_index % 2 == 0 else [0, 0.8, -1.6]
     for i in range(3):
         cmd.q[leg_index * 3 + i] = target_position[i]
-    
+
     cmd.duration = duration  # Time duration in milliseconds
 
     cmd_publisher.publish(cmd)
@@ -42,7 +42,7 @@ def motor_control(cmd_publisher, leg_index, duration):
 def control_sequence():
     rospy.init_node('control_sequence', anonymous=True)
 
-    cmd_publisher = rospy.Publisher('/unitree_go1/high_cmd', HighCmd, queue_size=1)
+    cmd_publisher = rospy.Publisher('/high_cmd', HighCmd, queue_size=1)
     rospy.sleep(0.5)
 
     actions = [stand_up, sit_down, motor_control]
