@@ -1,4 +1,6 @@
 <launch>
-  <!-- Start the gyro_yaw_publisher node -->
+  <arg name="ctrl_level" default="highlevel"/>
+  <node pkg="unitree_legged_real" type="ros_udp" name="node_ros_udp" output="screen" args="$(arg ctrl_level)"/>
   <node name="random_motion" pkg="unitree_go1_osc" type="random_motion.py" output="screen" />
+  <param name="control_level" value="$(arg ctrl_level)"/>
 </launch>

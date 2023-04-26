@@ -69,10 +69,10 @@ def main():
         selected_motion = random_motion(high_cmd_ros)
         #print("Motion: {}".format(selected_motion))
         motiontime = 0
-        while motiontime < 1450:
+        while True:
             motiontime += 2
             pub.publish(selected_motion)
-            if motiontime >= 1450:
+            if motiontime > 2000:
                 break
 
         rospy.sleep(1)
@@ -85,10 +85,10 @@ def main():
         pub.publish(ori_motion)
         
         motiontime = 0
-        while motiontime < 1450:
+        while True:
             motiontime += 2
             pub.publish(selected_motion)
-            if motiontime >= 1450:
+            if motiontime > 2000:
                 break
 
         rospy.sleep(1)
