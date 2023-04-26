@@ -8,7 +8,7 @@ def sit_down(cmd_publisher):
     cmd.mode = 1  # Position mode
 
     # Set desired joint angles for sitting down
-    cmd.q1 = [0, -0.8, 1.6, 0, -0.8, 1.6, 0, -0.8, 1.6, 0, -0.8, 1.6]
+    cmd.q = [0, -0.8, 1.6, 0, -0.8, 1.6, 0, -0.8, 1.6, 0, -0.8, 1.6]
     cmd.duration = 2000  # Time duration in milliseconds
 
     cmd_publisher.publish(cmd)
@@ -19,7 +19,7 @@ def stand_up(cmd_publisher):
     cmd.mode = 1  # Position mode
 
     # Set desired joint angles for standing up
-    cmd.q1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    cmd.q = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     cmd.duration = 2000  # Time duration in milliseconds
 
     cmd_publisher.publish(cmd)
